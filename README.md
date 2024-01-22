@@ -1,11 +1,6 @@
-# JHipster Sample Application
+# Boilerplate for Katas in Java
 
 ## Prerequisites
-
-### Java
-
-You need to have Java 21:
-- [JDK 21](https://openjdk.java.net/projects/jdk/21/)
 
 ### Node.js and NPM
 
@@ -28,16 +23,10 @@ npm install
 
 ## Start up
 
-```bash
-./mvnw
-```
-
 
 <!-- jhipster-needle-startupCommand -->
 
 ## Documentation
 
-- [Package types](documentation/package-types.md)
-- [Assertions](documentation/assertions.md)
 
 <!-- jhipster-needle-documentation -->

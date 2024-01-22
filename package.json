@@ -1,27 +1,13 @@
 {
-  "name": "jhipster-sample-application",
+  "name": "boilerplate-kata-java",
   "version": "0.0.0",
   "private": true,
-  "description": "JHipster Sample Application",
+  "description": "Boilerplate for Katas in Java",
   "license": "UNLICENSED",
   "engines": {
     "node": ">=20.10.0"
   },
   "cacheDirectories": [
     "node_modules"
-  ],
-  "scripts": {
-    "prepare": "husky install",
-    "prettier:check": "prettier --check '{,src/**/}*.{md,json,yml,html,js,ts,tsx,css,scss,vue,java,xml,feature}'",
-    "prettier:format": "prettier --write '{,src/**/}*.{md,json,yml,html,js,ts,tsx,css,scss,vue,java,xml,feature}'"
-  },
-  "devDependencies": {
-    "@prettier/plugin-xml": "3.2.2",
-    "husky": "8.0.3",
-    "lint-staged": "15.2.0",
-    "prettier": "3.1.1",
-    "prettier-plugin-gherkin": "2.2.1",
-    "prettier-plugin-java": "2.5.0",
-    "prettier-plugin-packagejson": "2.4.9"
-  }
+  ]
 }
