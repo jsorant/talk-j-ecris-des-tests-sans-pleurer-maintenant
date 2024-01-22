@@ -1,0 +1,13 @@
+{
+  "name": "jhipster-sample-application",
+  "version": "0.0.0",
+  "private": true,
+  "description": "JHipster Sample Application",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20.10.0"
+  },
+  "cacheDirectories": [
+    "node_modules"
+  ]
+}
