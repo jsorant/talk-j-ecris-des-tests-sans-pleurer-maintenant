@@ -37,5 +37,7 @@ npm install
 
 ## Documentation
 
+- [Package types](documentation/package-types.md)
+- [Assertions](documentation/assertions.md)
 
 <!-- jhipster-needle-documentation -->
