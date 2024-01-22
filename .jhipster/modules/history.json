@@ -9,5 +9,15 @@
       "endOfLine" : "lf",
       "indentSize" : 2
     }
+  }, {
+    "module" : "infinitest-filters",
+    "date" : "2024-01-22T13:14:59.023498500Z",
+    "properties" : {
+      "packageName" : "com.jsorant.kata",
+      "projectName" : "Boilerplate for Katas in Java",
+      "baseName" : "boilerplateKataJava",
+      "endOfLine" : "lf",
+      "indentSize" : 2
+    }
   } ]
 }
