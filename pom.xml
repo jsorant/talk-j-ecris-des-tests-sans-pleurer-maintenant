@@ -2,11 +2,11 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.mycompany.myapp</groupId>
-  <artifactId>jhipster-sample-application</artifactId>
+  <groupId>com.jsorant.kata</groupId>
+  <artifactId>boilerplate-kata-java</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>jhipsterSampleApplication</name>
-  <description>JHipster Sample Application</description>
+  <name>boilerplateKataJava</name>
+  <description>Boilerplate for Katas in Java</description>
   <properties>
     <java.version>21</java.version>
     <maven.version>3.9.5</maven.version>
