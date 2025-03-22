@@ -34,6 +34,10 @@ public class BorrowBook {
     return this;
   }
 
+  public void borrow(String userEmail, String bookId, Instant date) {
+    this.as(userEmail).bookId(bookId).date(date).act();
+  }
+
   public void act() {
     Optional<Book> book = bookRepository.get(bookId);
 
