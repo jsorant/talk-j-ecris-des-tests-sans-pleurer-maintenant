@@ -7,13 +7,13 @@ public class BorrowBook {
 
   private final BookRepository bookRepository;
   private final BorrowsRepository borrowsRepository;
-  private final FakeEmailSender emailSender;
+  private final EmailSender emailSender;
 
   private String bookId;
   private String borrowerEmail;
   private Instant date;
 
-  public BorrowBook(BookRepository bookRepository, BorrowsRepository borrowsRepository, FakeEmailSender emailSender) {
+  public BorrowBook(BookRepository bookRepository, BorrowsRepository borrowsRepository, EmailSender emailSender) {
     this.bookRepository = bookRepository;
     this.borrowsRepository = borrowsRepository;
     this.emailSender = emailSender;
@@ -59,6 +59,6 @@ public class BorrowBook {
     Borrow borrow = new Borrow(borrowerEmail, bookId, date);
     borrowsRepository.save(borrow);
 
-    emailSender.send(new BookBorrowedNotification(borrowerEmail, book.get().title(), date));
+    emailSender.send(new BookBorrowedEmail(borrowerEmail, book.get().title(), date));
   }
 }

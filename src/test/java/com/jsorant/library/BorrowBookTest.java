@@ -111,8 +111,8 @@ public class BorrowBookTest {
     borrowBook.act();
 
     assertEquals(
-      new BookBorrowedNotification("jeremy.sorant@domain.fr", "The Hobbit", Instant.parse("2025-04-14T10:00:00Z")),
-      emailSender.lastNotification()
+      new BookBorrowedEmail("jeremy.sorant@domain.fr", "The Hobbit", Instant.parse("2025-04-14T10:00:00Z")),
+      emailSender.lastEmailSent()
     );
   }
 }
