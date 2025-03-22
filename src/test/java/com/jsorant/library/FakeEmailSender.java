@@ -1,5 +1,7 @@
 package com.jsorant.library;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class FakeEmailSender implements EmailSender {
 
   private BookBorrowedEmail lastEmailSent;
@@ -11,5 +13,9 @@ public class FakeEmailSender implements EmailSender {
   @Override
   public void send(BookBorrowedEmail email) {
     lastEmailSent = email;
+  }
+
+  public void assertLastEmailSentIs(BookBorrowedEmail expectedEmail) {
+    assertThat(lastEmailSent).isEqualTo(expectedEmail);
   }
 }
