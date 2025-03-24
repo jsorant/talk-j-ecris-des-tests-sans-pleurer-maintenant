@@ -1,5 +1,20 @@
 package com.jsorant.library.domain.usecases;
 
+import com.jsorant.UnitTest;
+import com.jsorant.library.domain.Book;
+import com.jsorant.library.domain.BookFixture;
+import com.jsorant.library.domain.BookType;
+import com.jsorant.library.domain.Borrows;
+import com.jsorant.library.domain.events.BookBorrowed;
+import com.jsorant.library.domain.exceptions.BookAlreadyBorrowedException;
+import com.jsorant.library.domain.exceptions.BookDoesNotExistException;
+import com.jsorant.library.secondary.InMemoryBookRepository;
+import com.jsorant.library.secondary.InMemoryBorrowRepository;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.time.Instant;
+
 import static com.jsorant.library.domain.BookFixture.*;
 import static com.jsorant.library.domain.usecases.BorrowBookFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -7,93 +22,83 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.jsorant.UnitTest;
-import com.jsorant.library.domain.*;
-import com.jsorant.library.domain.exceptions.BookAlreadyBorrowedException;
-import com.jsorant.library.domain.exceptions.BookDoesNotExistException;
-import com.jsorant.library.secondary.InMemoryBookRepository;
-import com.jsorant.library.secondary.InMemoryBorrowRepository;
-import java.time.Instant;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 @UnitTest
 @DisplayName("Borrow a book")
 public class CleanedBorrowBookTest {
 
-  BorrowBookContext context = new BorrowBookContext();
-  BorrowBook borrowBook = context.getSut();
+    BorrowBookContext context = new BorrowBookContext();
+    BorrowBook borrowBook = context.getSut();
 
-  @Test
-  void shouldThrowWhenBookDoesNotExists() {
-    String bookId = idOfABookThatDoesNotExist();
+    @Test
+    void shouldThrowWhenBookDoesNotExists() {
+        String bookId = idOfABookThatDoesNotExist();
 
-    borrowBook.as(borrowerEmail()).bookId(bookId).date(borrowDate());
-    assertThatThrownBy(() -> borrowBook.act()).isEqualTo(new BookDoesNotExistException(bookId));
-  }
-
-  @Test
-  void shouldSendAnEmailToTheBorrowerWhenBookIsBorrowed() {
-    BookBorrowed event = borrowBook.as(borrowerEmail()).bookId(bookToBorrow().id()).date(borrowDate()).act();
-
-    BookBorrowed expectedEvent = new BookBorrowed(borrowerEmail(), bookToBorrow().id(), borrowDate());
-
-    assertThat(event).isEqualTo(expectedEvent);
-  }
-
-  @Test
-  void test2() {
-    InMemoryBookRepository bookRepository = new InMemoryBookRepository();
-    bookRepository.save(lordOfTheRings());
-    bookRepository.save(BookFixture.theHobbit());
-    bookRepository.save(harryPotter());
-
-    InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
-    Borrows aliceBorrows = new Borrows("alice.doe@domain.fr").borrow("1234567890", Instant.parse("2025-04-13T10:00:00Z"));
-    borrowsRepository.save(aliceBorrows);
-
-    // test book already borrowed
-    try {
-      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository).as(borrowerEmail()).bookId("1234567890").date(borrowDate());
-
-      borrowBook.act();
-
-      fail("Should have thrown an exception");
-    } catch (RuntimeException e) {
-      assertThat(e).isEqualTo(new BookAlreadyBorrowedException("1234567890"));
+        borrowBook.as(borrowerEmail()).bookId(bookId).date(borrowDate());
+        assertThatThrownBy(() -> borrowBook.act()).isEqualTo(new BookDoesNotExistException(bookId));
     }
-  }
 
-  @Test
-  void test3() {
-    InMemoryBookRepository bookRepository = new InMemoryBookRepository();
-    bookRepository.save(harryPotter());
-    bookRepository.save(lordOfTheRings());
-    bookRepository.save(BookFixture.theTwoTowers());
-    bookRepository.save(new Book("6453424356", "The Return of the King", "JRR Tolkien", BookType.NOVEL));
-    bookRepository.save(new Book("2534646466", "The Fellowship of the Ring", "JRR Tolkien", BookType.NOVEL));
-    bookRepository.save(BookFixture.theHobbit());
+    @Test
+    void shouldSendAnEmailToTheBorrowerWhenBookIsBorrowed() {
+        BookBorrowed event = borrowBook.as(borrowerEmail()).bookId(bookToBorrow().id()).date(borrowDate()).act();
 
-    InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
-    Borrows aliceBorrows = new Borrows(borrowerEmail())
-      .borrow("3214515512", Instant.parse("2025-04-10T10:00:00Z"))
-      .borrow("5341343136", Instant.parse("2025-04-11T10:00:00Z"))
-      .borrow("6453424356", Instant.parse("2025-04-12T10:00:00Z"))
-      .borrow("2534646466", Instant.parse("2025-04-13T10:00:00Z"));
-    borrowsRepository.save(aliceBorrows);
+        BookBorrowed expectedEvent = new BookBorrowed(borrowerEmail(), bookToBorrow().id(), borrowDate());
 
-    // test has already four books borrowed
-    try {
-      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository).as(borrowerEmail()).bookId("1234567890").date(borrowDate());
-
-      borrowBook.act();
-
-      fail("Should have thrown an exception");
-    } catch (RuntimeException e) {
-      assertEquals(
-        "Cannot borrow book with id 1234567890 because user jeremy.sorant@domain.fr has already four books borrowed",
-        e.getMessage()
-      );
+        assertThat(event).isEqualTo(expectedEvent);
     }
-  }
+
+    @Test
+    void test2() {
+        InMemoryBookRepository bookRepository = new InMemoryBookRepository();
+        bookRepository.save(lordOfTheRings());
+        bookRepository.save(BookFixture.theHobbit());
+        bookRepository.save(harryPotter());
+
+        InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
+        Borrows aliceBorrows = new Borrows("alice.doe@domain.fr").borrow("1234567890", Instant.parse("2025-04-13T10:00:00Z"));
+        borrowsRepository.save(aliceBorrows);
+
+        // test book already borrowed
+        try {
+            BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository).as(borrowerEmail()).bookId("1234567890").date(borrowDate());
+
+            borrowBook.act();
+
+            fail("Should have thrown an exception");
+        } catch (RuntimeException e) {
+            assertThat(e).isEqualTo(new BookAlreadyBorrowedException("1234567890"));
+        }
+    }
+
+    @Test
+    void test3() {
+        InMemoryBookRepository bookRepository = new InMemoryBookRepository();
+        bookRepository.save(harryPotter());
+        bookRepository.save(lordOfTheRings());
+        bookRepository.save(BookFixture.theTwoTowers());
+        bookRepository.save(new Book("6453424356", "The Return of the King", "JRR Tolkien", BookType.NOVEL));
+        bookRepository.save(new Book("2534646466", "The Fellowship of the Ring", "JRR Tolkien", BookType.NOVEL));
+        bookRepository.save(BookFixture.theHobbit());
+
+        InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
+        Borrows aliceBorrows = new Borrows(borrowerEmail())
+                .borrow("3214515512", Instant.parse("2025-04-10T10:00:00Z"))
+                .borrow("5341343136", Instant.parse("2025-04-11T10:00:00Z"))
+                .borrow("6453424356", Instant.parse("2025-04-12T10:00:00Z"))
+                .borrow("2534646466", Instant.parse("2025-04-13T10:00:00Z"));
+        borrowsRepository.save(aliceBorrows);
+
+        // test has already four books borrowed
+        try {
+            BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository).as(borrowerEmail()).bookId("1234567890").date(borrowDate());
+
+            borrowBook.act();
+
+            fail("Should have thrown an exception");
+        } catch (RuntimeException e) {
+            assertEquals(
+                    "Cannot borrow book with id 1234567890 because user jeremy.sorant@domain.fr has already four books borrowed",
+                    e.getMessage()
+            );
+        }
+    }
 }
