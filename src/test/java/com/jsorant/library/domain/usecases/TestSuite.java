@@ -5,7 +5,7 @@ import com.jsorant.library.domain.BookType;
 import com.jsorant.library.domain.Borrows;
 import com.jsorant.library.domain.events.BookBorrowed;
 import com.jsorant.library.domain.exceptions.BookAlreadyBorrowedException;
-import com.jsorant.library.domain.exceptions.BookDoesNotExistException;
+import com.jsorant.library.domain.exceptions.BookNotOwnedByTheLibraryException;
 import com.jsorant.library.domain.exceptions.BorrowerHasAlreadyFourBooksBorrowedException;
 import com.jsorant.library.secondary.InMemoryBookRepository;
 import com.jsorant.library.secondary.InMemoryBorrowRepository;
@@ -16,8 +16,8 @@ import java.time.Instant;
 import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// Book must exist
-// Book must be available
+// Book must be owned by the library
+// Book must not be already borrowed
 // Borrower must not be already borrowing four books
 // DomainEvent must be returned
 
@@ -70,8 +70,8 @@ public class TestSuite {
 
             fail("Should have thrown an exception");
         } catch (RuntimeException e) {
-            assertEquals(true, e instanceof BookDoesNotExistException);
-            assertEquals("1234567891", ((BookDoesNotExistException) e).bookId());
+            assertEquals(true, e instanceof BookNotOwnedByTheLibraryException);
+            assertEquals("1234567891", ((BookNotOwnedByTheLibraryException) e).bookId());
         }
     }
 

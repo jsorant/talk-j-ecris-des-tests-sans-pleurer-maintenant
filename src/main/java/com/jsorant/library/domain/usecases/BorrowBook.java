@@ -3,7 +3,7 @@ package com.jsorant.library.domain.usecases;
 import com.jsorant.library.domain.Borrows;
 import com.jsorant.library.domain.events.BookBorrowed;
 import com.jsorant.library.domain.exceptions.BookAlreadyBorrowedException;
-import com.jsorant.library.domain.exceptions.BookDoesNotExistException;
+import com.jsorant.library.domain.exceptions.BookNotOwnedByTheLibraryException;
 import com.jsorant.library.domain.ports.BookRepository;
 import com.jsorant.library.domain.ports.BorrowRepository;
 
@@ -52,7 +52,7 @@ public class BorrowBook {
 
     private void ensureBookExists() {
         if (books.get(bookId).isEmpty()) {
-            throw new BookDoesNotExistException(bookId);
+            throw new BookNotOwnedByTheLibraryException(bookId);
         }
     }
 

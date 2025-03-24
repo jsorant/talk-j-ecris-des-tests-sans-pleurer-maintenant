@@ -2,12 +2,12 @@ package com.jsorant.library.domain.exceptions;
 
 import java.util.Objects;
 
-public class BookDoesNotExistException extends RuntimeException {
+public class BookNotOwnedByTheLibraryException extends RuntimeException {
 
     private final String bookId;
 
-    public BookDoesNotExistException(String bookId) {
-        super("Cannot borro book with id " + bookId + " because it does not exist");
+    public BookNotOwnedByTheLibraryException(String bookId) {
+        super("Cannot borrow book with id " + bookId + " because it is not owned by the library");
         this.bookId = bookId;
     }
 
@@ -18,7 +18,7 @@ public class BookDoesNotExistException extends RuntimeException {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        BookDoesNotExistException that = (BookDoesNotExistException) o;
+        BookNotOwnedByTheLibraryException that = (BookNotOwnedByTheLibraryException) o;
         return Objects.equals(bookId, that.bookId);
     }
 

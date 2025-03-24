@@ -1,9 +1,9 @@
 package com.jsorant.library.domain;
 
 public class BookFixture {
-
-    public static String idOfABookThatDoesNotExist() {
-        return "1234567891";
+    
+    public static Book hungerGames() {
+        return new Book("6118431475", "Hunger Games", "Suzanne Collins", BookType.NOVEL);
     }
 
     public static Book theHobbit() {

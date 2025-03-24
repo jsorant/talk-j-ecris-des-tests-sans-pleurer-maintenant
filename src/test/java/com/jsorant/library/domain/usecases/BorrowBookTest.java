@@ -3,13 +3,11 @@ package com.jsorant.library.domain.usecases;
 import com.jsorant.UnitTest;
 import com.jsorant.library.domain.events.BookBorrowed;
 import com.jsorant.library.domain.exceptions.BookAlreadyBorrowedException;
-import com.jsorant.library.domain.exceptions.BookDoesNotExistException;
+import com.jsorant.library.domain.exceptions.BookNotOwnedByTheLibraryException;
 import com.jsorant.library.domain.exceptions.BorrowerHasAlreadyFourBooksBorrowedException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.jsorant.library.domain.BookFixture.idOfABookThatDoesNotExist;
-import static com.jsorant.library.domain.usecases.BorrowBookFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -26,17 +24,17 @@ public class BorrowBookTest {
         BookBorrowed event = borrowBook.act();
 
         assertThat(event)
-                .isEqualTo(new BookBorrowed(borrowerEmail(), bookToBorrowId(), borrowDate()));
+                .isEqualTo(new BookBorrowed(context.borrowerEmail(), context.bookToBorrowId(), context.borrowDate()));
     }
 
     @Test
-    void shouldThrowWhenBookDoesNotExist() {
+    void shouldThrowWhenBookIsNotOwnedByTheLibrary() {
         BorrowBook borrowBook = context
-                .butWithBookToBorrowId(idOfABookThatDoesNotExist())
+                .butWithBorrowingABookThatIsNotOwnedByTheLibrary()
                 .buildBorrowBook();
 
         assertThatThrownBy(borrowBook::act)
-                .isEqualTo(new BookDoesNotExistException(idOfABookThatDoesNotExist()));
+                .isEqualTo(new BookNotOwnedByTheLibraryException(context.idOfTheBookToBorrowThatIsNotOwnedByTheLibrary()));
     }
 
     @Test
@@ -46,7 +44,7 @@ public class BorrowBookTest {
                 .buildBorrowBook();
 
         assertThatThrownBy(borrowBook::act)
-                .isEqualTo(new BookAlreadyBorrowedException(bookToBorrowId()));
+                .isEqualTo(new BookAlreadyBorrowedException(context.bookToBorrowId()));
     }
 
     @Test
@@ -56,6 +54,6 @@ public class BorrowBookTest {
                 .buildBorrowBook();
 
         assertThatThrownBy(borrowBook::act)
-                .isEqualTo(new BorrowerHasAlreadyFourBooksBorrowedException(borrowerEmail(), bookToBorrowId()));
+                .isEqualTo(new BorrowerHasAlreadyFourBooksBorrowedException(context.borrowerEmail(), context.bookToBorrowId()));
     }
 }

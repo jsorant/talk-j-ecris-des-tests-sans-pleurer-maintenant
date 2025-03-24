@@ -7,33 +7,54 @@ import com.jsorant.library.secondary.InMemoryBorrowRepository;
 import java.time.Instant;
 
 import static com.jsorant.library.domain.BookFixture.*;
-import static com.jsorant.library.domain.usecases.BorrowBookFixture.*;
 
 public class BorrowBookContext {
 
     private final InMemoryBookRepository books = new InMemoryBookRepository();
     private final InMemoryBorrowRepository borrows = new InMemoryBorrowRepository();
 
-    private String bookToBorrowId = bookToBorrowId();
-    private String borrowerEmail = borrowerEmail();
-    private Instant borrowDate = borrowDate();
+    private String bookToBorrowId = theHobbit().id();
+    private final String notOwnedByTheLibraryBookId = hungerGames().id();
+    private final String borrowerEmail = "alice.doe@domain.fr";
+    private final String anotherBorrowerEmail = "bob.doe@domain.fr";
+    private final Instant borrowDate = Instant.parse("2025-04-14T10:00:00Z");
 
     public BorrowBookContext() {
         populateBookRepository();
     }
 
-    public BorrowBookContext butWithBookToBorrowId(String bookId) {
-        bookToBorrowId = bookId;
+    public String bookToBorrowId() {
+        return bookToBorrowId;
+    }
+
+    public String borrowerEmail() {
+        return borrowerEmail;
+    }
+
+    public String anotherBorrowerEmail() {
+        return anotherBorrowerEmail;
+    }
+
+    public Instant borrowDate() {
+        return borrowDate;
+    }
+
+    public String idOfTheBookToBorrowThatIsNotOwnedByTheLibrary() {
+        return notOwnedByTheLibraryBookId;
+    }
+
+    public BorrowBookContext butWithBorrowingABookThatIsNotOwnedByTheLibrary() {
+        bookToBorrowId = notOwnedByTheLibraryBookId;
 
         return this;
     }
 
     public BorrowBookContext butWithAlreadyFourBooksBorrowed() {
-        Borrows borrowerBorrows = new Borrows(borrowerEmail);
-
-        for (String bookId : fourOtherBookIds()) {
-            borrowerBorrows = borrowerBorrows.borrow(bookId, borrowDate);
-        }
+        Borrows borrowerBorrows = new Borrows(borrowerEmail)
+                .borrow(lordOfTheRings().id(), borrowDate)
+                .borrow(harryPotter().id(), borrowDate)
+                .borrow(theTwoTowers().id(), borrowDate)
+                .borrow(theReturnOfTheKing().id(), borrowDate);
 
         borrows.save(borrowerBorrows);
 
