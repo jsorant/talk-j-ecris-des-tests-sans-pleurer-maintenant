@@ -26,15 +26,13 @@ public class TestSuite {
     @Test
     void test1() {
         InMemoryBookRepository bookRepository = new InMemoryBookRepository();
+        InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
         bookRepository.save(new Book("3214515512", "The Lord of the Rings", "JRR Tolkien", BookType.NOVEL));
         bookRepository.save(new Book("1234567890", "The Hobbit", "JRR Tolkien", BookType.NOVEL));
         bookRepository.save(new Book("4083U14844", "Harry Potter and the Philosopher's Stone", "JK Rowling", BookType.NOVEL));
-
-        InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
-        Borrows aliceBorrows = new Borrows("bob.doe@domain.fr").borrow("1234567890", Instant.parse("2025-04-13T10:00:00Z"));
-        borrowsRepository.save(aliceBorrows);
-
         try { // already borrowed
+            Borrows bobBorrows = new Borrows("bob.doe@domain.fr").borrow("1234567890", Instant.parse("2025-04-13T10:00:00Z"));
+            borrowsRepository.save(bobBorrows);
             new BorrowBook(bookRepository, borrowsRepository)
                     .as("alice.doe@domain.fr")
                     .bookId("1234567890")
@@ -46,14 +44,12 @@ public class TestSuite {
             assertEquals(true, e instanceof BookAlreadyBorrowedException);
             assertEquals("1234567890", ((BookAlreadyBorrowedException) e).bookId());
         }
-
-        BookBorrowed event = new BorrowBook(bookRepository, borrowsRepository)
+        BookBorrowed result = new BorrowBook(bookRepository, borrowsRepository)
                 .as("alice.doe@domain.fr")
                 .bookId("3214515512")
                 .date(Instant.parse("2025-04-14T10:00:00Z"))
                 .act();
-
-        assertEquals(new BookBorrowed("alice.doe@domain.fr", "3214515512", Instant.parse("2025-04-14T10:00:00Z")), event);
+        assertEquals(new BookBorrowed("alice.doe@domain.fr", "3214515512", Instant.parse("2025-04-14T10:00:00Z")), result);
     }
 
     @Test
