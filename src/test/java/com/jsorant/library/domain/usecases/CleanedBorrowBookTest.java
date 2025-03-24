@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.jsorant.UnitTest;
 import com.jsorant.library.domain.*;
 import com.jsorant.library.domain.exceptions.BookAlreadyBorrowedException;
+import com.jsorant.library.domain.exceptions.BookDoesNotExistException;
 import com.jsorant.library.secondary.InMemoryBookRepository;
 import com.jsorant.library.secondary.InMemoryBorrowRepository;
 import java.time.Instant;
@@ -27,8 +28,7 @@ public class CleanedBorrowBookTest {
   void shouldThrowWhenBookDoesNotExists() {
     String bookId = idOfABookThatDoesNotExist();
 
-    assertThatThrownBy(() -> borrowBook.borrow(borrowerEmail(), bookId, borrowDate()))
-      .hasMessage("Cannot borrow book with id " + bookId + " because it does not exist");
+    assertThatThrownBy(() -> borrowBook.borrow(borrowerEmail(), bookId, borrowDate())).isEqualTo(new BookDoesNotExistException(bookId));
   }
 
   @Test
