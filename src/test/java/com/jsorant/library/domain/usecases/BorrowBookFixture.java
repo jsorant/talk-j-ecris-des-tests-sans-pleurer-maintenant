@@ -1,6 +1,11 @@
 package com.jsorant.library.domain.usecases;
 
 import java.time.Instant;
+import java.util.List;
+
+import static com.jsorant.library.domain.BookFixture.*;
+
+// Move into context ???
 
 public class BorrowBookFixture {
     public static Instant borrowDate() {
@@ -16,6 +21,15 @@ public class BorrowBookFixture {
     }
 
     public static String bookToBorrowId() {
-        return "1234567890";
+        return theHobbit().id();
+    }
+
+    public static List<String> fourOtherBookIds() {
+        return List.of(
+                lordOfTheRings().id(),
+                harryPotter().id(),
+                theTwoTowers().id(),
+                theReturnOfTheKing().id()
+        );
     }
 }
