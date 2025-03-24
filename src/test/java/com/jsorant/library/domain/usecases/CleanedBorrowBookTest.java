@@ -28,12 +28,13 @@ public class CleanedBorrowBookTest {
   void shouldThrowWhenBookDoesNotExists() {
     String bookId = idOfABookThatDoesNotExist();
 
-    assertThatThrownBy(() -> borrowBook.borrow(borrowerEmail(), bookId, borrowDate())).isEqualTo(new BookDoesNotExistException(bookId));
+    borrowBook.as(borrowerEmail()).bookId(bookId).date(borrowDate());
+    assertThatThrownBy(() -> borrowBook.act()).isEqualTo(new BookDoesNotExistException(bookId));
   }
 
   @Test
   void shouldSendAnEmailToTheBorrowerWhenBookIsBorrowed() {
-    BookBorrowed event = borrowBook.borrow(borrowerEmail(), bookToBorrow().id(), borrowDate());
+    BookBorrowed event = borrowBook.as(borrowerEmail()).bookId(bookToBorrow().id()).date(borrowDate()).act();
 
     BookBorrowed expectedEvent = new BookBorrowed(borrowerEmail(), bookToBorrow().id(), borrowDate());
 

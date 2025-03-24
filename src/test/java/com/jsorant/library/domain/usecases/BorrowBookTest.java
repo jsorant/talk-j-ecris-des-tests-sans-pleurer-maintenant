@@ -24,12 +24,11 @@ public class BorrowBookTest {
     InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
 
     try {
-      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository)
+      new BorrowBook(bookRepository, borrowsRepository)
         .as("jeremy.sorant@domain.fr")
         .bookId("1234567891")
-        .date(Instant.parse("2025-04-14T10:00:00Z"));
-
-      borrowBook.act();
+        .date(Instant.parse("2025-04-14T10:00:00Z"))
+        .act();
 
       fail("Should have thrown an exception");
     } catch (RuntimeException e) {
@@ -50,12 +49,11 @@ public class BorrowBookTest {
     borrowsRepository.save(aliceBorrows);
 
     try {
-      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository)
+      new BorrowBook(bookRepository, borrowsRepository)
         .as("jeremy.sorant@domain.fr")
         .bookId("1234567890")
-        .date(Instant.parse("2025-04-14T10:00:00Z"));
-
-      borrowBook.act();
+        .date(Instant.parse("2025-04-14T10:00:00Z"))
+        .act();
 
       fail("Should have thrown an exception");
     } catch (RuntimeException e) {
@@ -83,12 +81,11 @@ public class BorrowBookTest {
     borrowsRepository.save(aliceBorrows);
 
     try {
-      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository)
+      new BorrowBook(bookRepository, borrowsRepository)
         .as("alice.doe@domain.fr")
         .bookId("1234567890")
-        .date(Instant.parse("2025-04-14T10:00:00Z"));
-
-      borrowBook.act();
+        .date(Instant.parse("2025-04-14T10:00:00Z"))
+        .act();
 
       fail("Should have thrown an exception");
     } catch (RuntimeException e) {
@@ -108,12 +105,11 @@ public class BorrowBookTest {
 
     InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
 
-    BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository)
+    BookBorrowed event = new BorrowBook(bookRepository, borrowsRepository)
       .as("jeremy.sorant@domain.fr")
       .bookId("1234567890")
-      .date(Instant.parse("2025-04-14T10:00:00Z"));
-
-    BookBorrowed event = borrowBook.act();
+      .date(Instant.parse("2025-04-14T10:00:00Z"))
+      .act();
 
     assertEquals(new BookBorrowed("jeremy.sorant@domain.fr", "1234567890", Instant.parse("2025-04-14T10:00:00Z")), event);
   }

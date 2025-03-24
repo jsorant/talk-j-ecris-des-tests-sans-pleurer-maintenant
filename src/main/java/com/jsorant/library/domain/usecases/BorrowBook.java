@@ -37,10 +37,6 @@ public class BorrowBook {
     return this;
   }
 
-  public BookBorrowed borrow(String userEmail, String bookId, Instant date) {
-    return this.as(userEmail).bookId(bookId).date(date).act();
-  }
-
   public BookBorrowed act() {
     ensureBookExists();
 
