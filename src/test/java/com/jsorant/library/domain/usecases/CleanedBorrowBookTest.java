@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.jsorant.UnitTest;
 import com.jsorant.library.domain.*;
+import com.jsorant.library.domain.exceptions.BookAlreadyBorrowedException;
 import com.jsorant.library.secondary.InMemoryBookRepository;
 import com.jsorant.library.secondary.InMemoryBorrowRepository;
 import java.time.Instant;
@@ -58,7 +59,7 @@ public class CleanedBorrowBookTest {
 
       fail("Should have thrown an exception");
     } catch (RuntimeException e) {
-      assertEquals("Cannot borrow book with id 1234567890 because it is not available", e.getMessage());
+      assertThat(e).isEqualTo(new BookAlreadyBorrowedException("1234567890"));
     }
   }
 

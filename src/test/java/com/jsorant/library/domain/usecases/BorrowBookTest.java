@@ -8,6 +8,7 @@ import com.jsorant.library.domain.Book;
 import com.jsorant.library.domain.BookBorrowed;
 import com.jsorant.library.domain.BookType;
 import com.jsorant.library.domain.Borrows;
+import com.jsorant.library.domain.exceptions.BookAlreadyBorrowedException;
 import com.jsorant.library.secondary.InMemoryBookRepository;
 import com.jsorant.library.secondary.InMemoryBorrowRepository;
 import java.time.Instant;
@@ -56,7 +57,8 @@ public class BorrowBookTest {
 
       fail("Should have thrown an exception");
     } catch (RuntimeException e) {
-      assertEquals("Cannot borrow book with id 1234567890 because it is not available", e.getMessage());
+      assertEquals(true, e instanceof BookAlreadyBorrowedException);
+      assertEquals("1234567890", ((BookAlreadyBorrowedException) e).bookId());
     }
   }
 

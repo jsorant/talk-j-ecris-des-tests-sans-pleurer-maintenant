@@ -2,6 +2,7 @@ package com.jsorant.library.domain.usecases;
 
 import com.jsorant.library.domain.BookBorrowed;
 import com.jsorant.library.domain.Borrows;
+import com.jsorant.library.domain.exceptions.BookAlreadyBorrowedException;
 import com.jsorant.library.domain.ports.BookRepository;
 import com.jsorant.library.domain.ports.BorrowRepository;
 import java.time.Instant;
@@ -53,7 +54,7 @@ public class BorrowBook {
 
   private void ensureBookIsNotAlreadyBorrowed() {
     if (borrows.isBorrowed(bookId)) {
-      throw new RuntimeException("Cannot borrow book with id " + bookId + " because it is not available");
+      throw new BookAlreadyBorrowedException(bookId);
     }
   }
 
