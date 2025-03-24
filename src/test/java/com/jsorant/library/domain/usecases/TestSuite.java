@@ -31,7 +31,7 @@ public class TestSuite {
         bookRepository.save(new Book("4083U14844", "Harry Potter and the Philosopher's Stone", "JK Rowling", BookType.NOVEL));
 
         InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
-        Borrows aliceBorrows = new Borrows("alice.doe@domain.fr").borrow("1234567890", Instant.parse("2025-04-13T10:00:00Z"));
+        Borrows aliceBorrows = new Borrows("bob.doe@domain.fr").borrow("1234567890", Instant.parse("2025-04-13T10:00:00Z"));
         borrowsRepository.save(aliceBorrows);
 
         try { // already borrowed
