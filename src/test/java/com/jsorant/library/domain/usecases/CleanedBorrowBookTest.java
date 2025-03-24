@@ -1,12 +1,16 @@
-package com.jsorant.library;
+package com.jsorant.library.domain.usecases;
 
-import static com.jsorant.library.BookFixture.*;
-import static com.jsorant.library.BorrowBookFixture.*;
+import static com.jsorant.library.domain.BookFixture.*;
+import static com.jsorant.library.domain.usecases.BorrowBookFixture.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.jsorant.UnitTest;
+import com.jsorant.library.domain.*;
+import com.jsorant.library.secondary.FakeEmailSender;
+import com.jsorant.library.secondary.InMemoryBookRepository;
+import com.jsorant.library.secondary.InMemoryBorrowsRepository;
 import java.time.Instant;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

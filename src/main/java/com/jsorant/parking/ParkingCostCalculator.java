@@ -1,6 +1,5 @@
 package com.jsorant.parking;
 
-import com.jsorant.library.Currency;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 

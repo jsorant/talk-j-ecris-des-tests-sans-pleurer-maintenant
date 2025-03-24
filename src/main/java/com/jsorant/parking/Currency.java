@@ -1,4 +1,4 @@
-package com.jsorant.library;
+package com.jsorant.parking;
 
 public enum Currency {
   EURO,

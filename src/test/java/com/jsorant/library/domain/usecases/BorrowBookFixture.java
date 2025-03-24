@@ -1,7 +1,8 @@
-package com.jsorant.library;
+package com.jsorant.library.domain.usecases;
 
-import static com.jsorant.library.BookFixture.theHobbit;
+import static com.jsorant.library.domain.BookFixture.theHobbit;
 
+import com.jsorant.library.domain.Book;
 import java.time.Instant;
 
 public class BorrowBookFixture {

@@ -1,9 +1,16 @@
-package com.jsorant.library;
+package com.jsorant.library.domain.usecases;
 
 import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.jsorant.UnitTest;
+import com.jsorant.library.domain.Book;
+import com.jsorant.library.domain.BookBorrowedEmail;
+import com.jsorant.library.domain.BookType;
+import com.jsorant.library.domain.Borrow;
+import com.jsorant.library.secondary.FakeEmailSender;
+import com.jsorant.library.secondary.InMemoryBookRepository;
+import com.jsorant.library.secondary.InMemoryBorrowsRepository;
 import java.time.Instant;
 import org.junit.jupiter.api.Test;
 

@@ -1,6 +1,9 @@
-package com.jsorant.library;
+package com.jsorant.library.secondary;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import com.jsorant.library.domain.BookBorrowedEmail;
+import com.jsorant.library.domain.ports.EmailSender;
 
 public class FakeEmailSender implements EmailSender {
 

@@ -1,5 +1,6 @@
-package com.jsorant.library;
+package com.jsorant.library.domain.ports;
 
+import com.jsorant.library.domain.Borrow;
 import java.util.Optional;
 
 public interface BorrowsRepository {

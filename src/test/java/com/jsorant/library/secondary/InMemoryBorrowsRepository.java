@@ -1,5 +1,7 @@
-package com.jsorant.library;
+package com.jsorant.library.secondary;
 
+import com.jsorant.library.domain.Borrow;
+import com.jsorant.library.domain.ports.BorrowsRepository;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

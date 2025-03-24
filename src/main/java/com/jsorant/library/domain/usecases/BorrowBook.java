@@ -1,5 +1,11 @@
-package com.jsorant.library;
+package com.jsorant.library.domain.usecases;
 
+import com.jsorant.library.domain.Book;
+import com.jsorant.library.domain.BookBorrowedEmail;
+import com.jsorant.library.domain.Borrow;
+import com.jsorant.library.domain.ports.BookRepository;
+import com.jsorant.library.domain.ports.BorrowsRepository;
+import com.jsorant.library.domain.ports.EmailSender;
 import java.time.Instant;
 import java.util.Optional;
 

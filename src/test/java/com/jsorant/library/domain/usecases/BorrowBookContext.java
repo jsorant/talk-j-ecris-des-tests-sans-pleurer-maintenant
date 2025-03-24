@@ -1,7 +1,14 @@
-package com.jsorant.library;
+package com.jsorant.library.domain.usecases;
 
-import static com.jsorant.library.BookFixture.harryPotter;
-import static com.jsorant.library.BookFixture.lordOfTheRings;
+import static com.jsorant.library.domain.BookFixture.harryPotter;
+import static com.jsorant.library.domain.BookFixture.lordOfTheRings;
+
+import com.jsorant.library.domain.Book;
+import com.jsorant.library.domain.BookFixture;
+import com.jsorant.library.domain.BookType;
+import com.jsorant.library.secondary.FakeEmailSender;
+import com.jsorant.library.secondary.InMemoryBookRepository;
+import com.jsorant.library.secondary.InMemoryBorrowsRepository;
 
 public class BorrowBookContext {
 
