@@ -1,12 +1,11 @@
 package com.jsorant.library.domain.ports;
 
-import com.jsorant.library.domain.Borrow;
-import java.util.Optional;
+import com.jsorant.library.domain.Borrows;
 
 public interface BorrowRepository {
-  void save(Borrow borrow);
+  boolean isBorrowed(String bookId);
 
-  Optional<Borrow> findForBookId(String bookId);
+  Borrows getForBorrower(String borrowerEmail);
 
-  int borrowsCountForBorrower(String borrowerEmail);
+  void save(Borrows borrowsForBorrower);
 }

@@ -1,6 +1,6 @@
 package com.jsorant.library.secondary;
 
-import com.jsorant.library.domain.Borrow;
+import com.jsorant.library.domain.Borrows;
 import com.jsorant.library.domain.ports.BorrowRepository;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,20 +8,20 @@ import java.util.Optional;
 
 public class InMemoryBorrowRepository implements BorrowRepository {
 
-  private final Map<String, Borrow> borrows = new HashMap<>();
+  private final Map<String, Borrows> borrows = new HashMap<>();
 
   @Override
-  public void save(Borrow borrow) {
-    borrows.put(borrow.bookId(), borrow);
+  public boolean isBorrowed(String bookId) {
+    return borrows.values().stream().anyMatch(borrows -> borrows.isBorrowed(bookId));
   }
 
   @Override
-  public Optional<Borrow> findForBookId(String bookId) {
-    return Optional.ofNullable(borrows.get(bookId));
+  public Borrows getForBorrower(String borrowerEmail) {
+    return Optional.ofNullable(borrows.get(borrowerEmail)).orElse(new Borrows(borrowerEmail));
   }
 
   @Override
-  public int borrowsCountForBorrower(String borrowerEmail) {
-    return (int) borrows.values().stream().filter(borrow -> borrow.borrowerEmail().equals(borrowerEmail)).count();
+  public void save(Borrows borrows) {
+    this.borrows.put(borrows.borrowerEmail(), borrows);
   }
 }

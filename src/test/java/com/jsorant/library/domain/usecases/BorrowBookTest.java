@@ -7,7 +7,7 @@ import com.jsorant.UnitTest;
 import com.jsorant.library.domain.Book;
 import com.jsorant.library.domain.BookBorrowedEmail;
 import com.jsorant.library.domain.BookType;
-import com.jsorant.library.domain.Borrow;
+import com.jsorant.library.domain.Borrows;
 import com.jsorant.library.secondary.FakeEmailSender;
 import com.jsorant.library.secondary.InMemoryBookRepository;
 import com.jsorant.library.secondary.InMemoryBorrowRepository;
@@ -16,9 +16,6 @@ import org.junit.jupiter.api.Test;
 
 @UnitTest
 public class BorrowBookTest {
-
-  // Check exists
-  // Check is available
 
   @Test
   void shouldNotBorrowBookWhenBookNotExists() {
@@ -48,7 +45,8 @@ public class BorrowBookTest {
     bookRepository.save(new Book("4083U14844", "Harry Potter and the Philosopher's Stone", "JK Rowling", BookType.NOVEL));
 
     InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
-    borrowsRepository.save(new Borrow("alice.doe@domain.fr", "1234567890", Instant.parse("2025-04-13T10:00:00Z")));
+    Borrows aliceBorrows = new Borrows("alice.doe@domain.fr").borrow("1234567890", Instant.parse("2025-04-13T10:00:00Z"));
+    borrowsRepository.save(aliceBorrows);
 
     try {
       FakeEmailSender emailSender = new FakeEmailSender();
@@ -76,15 +74,17 @@ public class BorrowBookTest {
     bookRepository.save(new Book("1234567890", "The Hobbit", "JRR Tolkien", BookType.NOVEL));
 
     InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
-    borrowsRepository.save(new Borrow("jeremy.sorant@domain.fr", "3214515512", Instant.parse("2025-04-10T10:00:00Z")));
-    borrowsRepository.save(new Borrow("jeremy.sorant@domain.fr", "5341343136", Instant.parse("2025-04-11T10:00:00Z")));
-    borrowsRepository.save(new Borrow("jeremy.sorant@domain.fr", "6453424356", Instant.parse("2025-04-12T10:00:00Z")));
-    borrowsRepository.save(new Borrow("jeremy.sorant@domain.fr", "2534646466", Instant.parse("2025-04-13T10:00:00Z")));
+    Borrows aliceBorrows = new Borrows("alice.doe@domain.fr")
+      .borrow("2534646466", Instant.parse("2025-04-13T10:00:00Z"))
+      .borrow("6453424356", Instant.parse("2025-04-14T10:00:00Z"))
+      .borrow("3214515512", Instant.parse("2025-04-15T10:00:00Z"))
+      .borrow("5341343136", Instant.parse("2025-04-16T10:00:00Z"));
+    borrowsRepository.save(aliceBorrows);
 
     try {
       FakeEmailSender emailSender = new FakeEmailSender();
       BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository, emailSender)
-        .as("jeremy.sorant@domain.fr")
+        .as("alice.doe@domain.fr")
         .bookId("1234567890")
         .date(Instant.parse("2025-04-14T10:00:00Z"));
 
@@ -93,7 +93,7 @@ public class BorrowBookTest {
       fail("Should have thrown an exception");
     } catch (RuntimeException e) {
       assertEquals(
-        "Cannot borrow book with id 1234567890 because user jeremy.sorant@domain.fr has already four books borrowed",
+        "Cannot borrow book with id 1234567890 because user alice.doe@domain.fr has already four books borrowed",
         e.getMessage()
       );
     }

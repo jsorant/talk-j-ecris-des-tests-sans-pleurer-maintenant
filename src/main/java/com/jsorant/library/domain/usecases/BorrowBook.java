@@ -2,7 +2,7 @@ package com.jsorant.library.domain.usecases;
 
 import com.jsorant.library.domain.Book;
 import com.jsorant.library.domain.BookBorrowedEmail;
-import com.jsorant.library.domain.Borrow;
+import com.jsorant.library.domain.Borrows;
 import com.jsorant.library.domain.ports.BookRepository;
 import com.jsorant.library.domain.ports.BorrowRepository;
 import com.jsorant.library.domain.ports.EmailSender;
@@ -45,26 +45,29 @@ public class BorrowBook {
   }
 
   public void act() {
+    Book book = retrieveBook();
+
+    ensureBookIsNotAlreadyBorrowed();
+
+    Borrows borrowsForBorrower = borrows.getForBorrower(borrowerEmail).borrow(bookId, date);
+
+    borrows.save(borrowsForBorrower);
+
+    emailSender.send(new BookBorrowedEmail(borrowerEmail, book.title(), date));
+  }
+
+  private void ensureBookIsNotAlreadyBorrowed() {
+    if (borrows.isBorrowed(bookId)) {
+      throw new RuntimeException("Cannot borrow book with id " + bookId + " because it is not available");
+    }
+  }
+
+  private Book retrieveBook() {
     Optional<Book> book = books.get(bookId);
 
     if (book.isEmpty()) {
       throw new RuntimeException("Cannot borrow book with id " + bookId + " because it does not exist");
     }
-
-    if (borrows.findForBookId(bookId).isPresent()) {
-      throw new RuntimeException("Cannot borrow book with id " + bookId + " because it is not available");
-    }
-
-    int borrowsCount = borrows.borrowsCountForBorrower(borrowerEmail);
-    if (borrowsCount >= 4) {
-      throw new RuntimeException(
-        "Cannot borrow book with id " + bookId + " because user " + borrowerEmail + " has already four books borrowed"
-      );
-    }
-
-    Borrow borrow = new Borrow(borrowerEmail, bookId, date);
-    borrows.save(borrow);
-
-    emailSender.send(new BookBorrowedEmail(borrowerEmail, book.get().title(), date));
+    return book.get();
   }
 }

@@ -46,7 +46,8 @@ public class CleanedBorrowBookTest {
     bookRepository.save(harryPotter());
 
     InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
-    borrowsRepository.save(new Borrow("alice.doe@domain.fr", "1234567890", Instant.parse("2025-04-13T10:00:00Z")));
+    Borrows aliceBorrows = new Borrows("alice.doe@domain.fr").borrow("1234567890", Instant.parse("2025-04-13T10:00:00Z"));
+    borrowsRepository.save(aliceBorrows);
 
     // test book already borrowed
     try {
@@ -75,10 +76,12 @@ public class CleanedBorrowBookTest {
     bookRepository.save(BookFixture.theHobbit());
 
     InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
-    borrowsRepository.save(new Borrow(borrowerEmail(), "3214515512", Instant.parse("2025-04-10T10:00:00Z")));
-    borrowsRepository.save(new Borrow(borrowerEmail(), "5341343136", Instant.parse("2025-04-11T10:00:00Z")));
-    borrowsRepository.save(new Borrow(borrowerEmail(), "6453424356", Instant.parse("2025-04-12T10:00:00Z")));
-    borrowsRepository.save(new Borrow(borrowerEmail(), "2534646466", Instant.parse("2025-04-13T10:00:00Z")));
+    Borrows aliceBorrows = new Borrows(borrowerEmail())
+      .borrow("3214515512", Instant.parse("2025-04-10T10:00:00Z"))
+      .borrow("5341343136", Instant.parse("2025-04-11T10:00:00Z"))
+      .borrow("6453424356", Instant.parse("2025-04-12T10:00:00Z"))
+      .borrow("2534646466", Instant.parse("2025-04-13T10:00:00Z"));
+    borrowsRepository.save(aliceBorrows);
 
     // test has already four books borrowed
     try {
