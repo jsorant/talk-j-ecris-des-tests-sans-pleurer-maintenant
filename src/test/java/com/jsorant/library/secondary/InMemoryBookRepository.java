@@ -10,8 +10,6 @@ public class InMemoryBookRepository implements BookRepository {
 
   private final Map<String, Book> books = new HashMap<>();
 
-  public InMemoryBookRepository() {}
-
   @Override
   public void save(Book book) {
     books.put(book.id(), book);

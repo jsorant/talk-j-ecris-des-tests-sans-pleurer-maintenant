@@ -12,9 +12,10 @@ import com.jsorant.library.secondary.InMemoryBorrowsRepository;
 
 public class BorrowBookContext {
 
-  private final FakeEmailSender emailSender = new FakeEmailSender();
   private final InMemoryBookRepository bookRepository = new InMemoryBookRepository();
   private final InMemoryBorrowsRepository borrowsRepository = new InMemoryBorrowsRepository();
+  private final FakeEmailSender emailSender = new FakeEmailSender();
+
   private final BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository, emailSender);
 
   public BorrowBookContext() {
