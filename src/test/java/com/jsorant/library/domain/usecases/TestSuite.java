@@ -6,6 +6,7 @@ import com.jsorant.library.domain.Borrows;
 import com.jsorant.library.domain.events.BookBorrowed;
 import com.jsorant.library.domain.exceptions.BookAlreadyBorrowedException;
 import com.jsorant.library.domain.exceptions.BookDoesNotExistException;
+import com.jsorant.library.domain.exceptions.BorrowerHasAlreadyFourBooksBorrowedException;
 import com.jsorant.library.secondary.InMemoryBookRepository;
 import com.jsorant.library.secondary.InMemoryBorrowRepository;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ public class TestSuite {
 
         try { // already borrowed
             new BorrowBook(bookRepository, borrowsRepository)
-                    .as("jeremy.sorant@domain.fr")
+                    .as("alice.doe@domain.fr")
                     .bookId("1234567890")
                     .date(Instant.parse("2025-04-14T10:00:00Z"))
                     .act();
@@ -47,14 +48,14 @@ public class TestSuite {
         }
 
         BookBorrowed event = new BorrowBook(bookRepository, borrowsRepository)
-                .as("jeremy.sorant@domain.fr")
+                .as("alice.doe@domain.fr")
                 .bookId("3214515512")
                 .date(Instant.parse("2025-04-14T10:00:00Z"))
                 .act();
 
-        assertEquals(new BookBorrowed("jeremy.sorant@domain.fr", "3214515512", Instant.parse("2025-04-14T10:00:00Z")), event);
+        assertEquals(new BookBorrowed("alice.doe@domain.fr", "3214515512", Instant.parse("2025-04-14T10:00:00Z")), event);
     }
-    
+
     @Test
     void test2() {
         InMemoryBookRepository bookRepository = new InMemoryBookRepository();
@@ -62,7 +63,7 @@ public class TestSuite {
 
         try {
             new BorrowBook(bookRepository, borrowsRepository)
-                    .as("jeremy.sorant@domain.fr")
+                    .as("alice.doe@domain.fr")
                     .bookId("1234567891")
                     .date(Instant.parse("2025-04-14T10:00:00Z"))
                     .act();
@@ -101,10 +102,9 @@ public class TestSuite {
 
             fail("Should have thrown an exception");
         } catch (RuntimeException e) {
-            assertEquals(
-                    "Cannot borrow book with id 1234567890 because user alice.doe@domain.fr has already four books borrowed",
-                    e.getMessage()
-            );
+            assertEquals(true, e instanceof BorrowerHasAlreadyFourBooksBorrowedException);
+            assertEquals("1234567890", ((BorrowerHasAlreadyFourBooksBorrowedException) e).bookId());
+            assertEquals("alice.doe@domain.fr", ((BorrowerHasAlreadyFourBooksBorrowedException) e).borrowerEmail());
         }
     }
 
@@ -118,11 +118,11 @@ public class TestSuite {
         InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
 
         BookBorrowed event = new BorrowBook(bookRepository, borrowsRepository)
-                .as("jeremy.sorant@domain.fr")
+                .as("alice.doe@domain.fr")
                 .bookId("1234567890")
                 .date(Instant.parse("2025-04-14T10:00:00Z"))
                 .act();
 
-        assertEquals(new BookBorrowed("jeremy.sorant@domain.fr", "1234567890", Instant.parse("2025-04-14T10:00:00Z")), event);
+        assertEquals(new BookBorrowed("alice.doe@domain.fr", "1234567890", Instant.parse("2025-04-14T10:00:00Z")), event);
     }
 }

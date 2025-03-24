@@ -1,5 +1,7 @@
 package com.jsorant.library.domain;
 
+import com.jsorant.library.domain.exceptions.BorrowerHasAlreadyFourBooksBorrowedException;
+
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Stream;
@@ -24,11 +26,7 @@ public final class Borrows {
     }
 
     public Borrows borrow(String bookId, Instant date) {
-        if (borrows.size() >= 4) {
-            throw new RuntimeException(
-                    "Cannot borrow book with id " + bookId + " because user " + borrowerEmail + " has already four books borrowed"
-            );
-        }
+        ensureCanBorrowAnotherBook(bookId);
 
         Borrow borrow = new Borrow(borrowerEmail, bookId, date);
 
@@ -37,5 +35,11 @@ public final class Borrows {
 
     public boolean isBorrowed(String bookId) {
         return borrows.stream().anyMatch(borrow -> borrow.bookId().equals(bookId));
+    }
+
+    private void ensureCanBorrowAnotherBook(String bookId) {
+        if (borrows.size() >= 4) {
+            throw new BorrowerHasAlreadyFourBooksBorrowedException(borrowerEmail, bookId);
+        }
     }
 }
