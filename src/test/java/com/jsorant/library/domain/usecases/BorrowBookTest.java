@@ -30,7 +30,7 @@ public class BorrowBookTest {
     @Test
     void shouldThrowWhenBookIsNotOwnedByTheLibrary() {
         BorrowBook borrowBook = context
-                .butWithBorrowingABookThatIsNotOwnedByTheLibrary()
+                .butBorrowingABookThatIsNotOwnedByTheLibrary()
                 .buildBorrowBook();
 
         assertThatThrownBy(borrowBook::act)

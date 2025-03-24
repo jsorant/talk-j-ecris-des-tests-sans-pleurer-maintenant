@@ -43,20 +43,17 @@ public class BorrowBookContext {
         return notOwnedByTheLibraryBookId;
     }
 
-    public BorrowBookContext butWithBorrowingABookThatIsNotOwnedByTheLibrary() {
+    public BorrowBookContext butBorrowingABookThatIsNotOwnedByTheLibrary() {
         bookToBorrowId = notOwnedByTheLibraryBookId;
 
         return this;
     }
 
     public BorrowBookContext butWithAlreadyFourBooksBorrowed() {
-        Borrows borrowerBorrows = new Borrows(borrowerEmail)
-                .borrow(lordOfTheRings().id(), borrowDate)
-                .borrow(harryPotter().id(), borrowDate)
-                .borrow(theTwoTowers().id(), borrowDate)
-                .borrow(theReturnOfTheKing().id(), borrowDate);
-
-        borrows.save(borrowerBorrows);
+        borrow(lordOfTheRings().id());
+        borrow(harryPotter().id());
+        borrow(theTwoTowers().id());
+        borrow(theReturnOfTheKing().id());
 
         return this;
     }
@@ -83,5 +80,13 @@ public class BorrowBookContext {
         books.save(theReturnOfTheKing());
         books.save(theFellowshipOfTheRing());
         books.save(theHobbit());
+    }
+
+    private void borrow(String bookId) {
+        new BorrowBook(books, borrows)
+                .as(borrowerEmail)
+                .bookId(bookId)
+                .date(borrowDate)
+                .act();
     }
 }
