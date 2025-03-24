@@ -1,12 +1,12 @@
 package com.jsorant.library.secondary;
 
 import com.jsorant.library.domain.Borrow;
-import com.jsorant.library.domain.ports.BorrowsRepository;
+import com.jsorant.library.domain.ports.BorrowRepository;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class InMemoryBorrowsRepository implements BorrowsRepository {
+public class InMemoryBorrowRepository implements BorrowRepository {
 
   private final Map<String, Borrow> borrows = new HashMap<>();
 

@@ -10,7 +10,7 @@ import com.jsorant.UnitTest;
 import com.jsorant.library.domain.*;
 import com.jsorant.library.secondary.FakeEmailSender;
 import com.jsorant.library.secondary.InMemoryBookRepository;
-import com.jsorant.library.secondary.InMemoryBorrowsRepository;
+import com.jsorant.library.secondary.InMemoryBorrowRepository;
 import java.time.Instant;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ public class CleanedBorrowBookTest {
     bookRepository.save(BookFixture.theHobbit());
     bookRepository.save(harryPotter());
 
-    InMemoryBorrowsRepository borrowsRepository = new InMemoryBorrowsRepository();
+    InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
     borrowsRepository.save(new Borrow("alice.doe@domain.fr", "1234567890", Instant.parse("2025-04-13T10:00:00Z")));
 
     // test book already borrowed
@@ -74,7 +74,7 @@ public class CleanedBorrowBookTest {
     bookRepository.save(new Book("2534646466", "The Fellowship of the Ring", "JRR Tolkien", BookType.NOVEL));
     bookRepository.save(BookFixture.theHobbit());
 
-    InMemoryBorrowsRepository borrowsRepository = new InMemoryBorrowsRepository();
+    InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
     borrowsRepository.save(new Borrow(borrowerEmail(), "3214515512", Instant.parse("2025-04-10T10:00:00Z")));
     borrowsRepository.save(new Borrow(borrowerEmail(), "5341343136", Instant.parse("2025-04-11T10:00:00Z")));
     borrowsRepository.save(new Borrow(borrowerEmail(), "6453424356", Instant.parse("2025-04-12T10:00:00Z")));

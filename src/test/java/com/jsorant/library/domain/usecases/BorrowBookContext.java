@@ -8,15 +8,15 @@ import com.jsorant.library.domain.BookFixture;
 import com.jsorant.library.domain.BookType;
 import com.jsorant.library.secondary.FakeEmailSender;
 import com.jsorant.library.secondary.InMemoryBookRepository;
-import com.jsorant.library.secondary.InMemoryBorrowsRepository;
+import com.jsorant.library.secondary.InMemoryBorrowRepository;
 
 public class BorrowBookContext {
 
-  private final InMemoryBookRepository bookRepository = new InMemoryBookRepository();
-  private final InMemoryBorrowsRepository borrowsRepository = new InMemoryBorrowsRepository();
+  private final InMemoryBookRepository books = new InMemoryBookRepository();
+  private final InMemoryBorrowRepository borrows = new InMemoryBorrowRepository();
   private final FakeEmailSender emailSender = new FakeEmailSender();
 
-  private final BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository, emailSender);
+  private final BorrowBook borrowBook = new BorrowBook(books, borrows, emailSender);
 
   public BorrowBookContext() {
     populateBookRepository();
@@ -31,11 +31,11 @@ public class BorrowBookContext {
   }
 
   private void populateBookRepository() {
-    bookRepository.save(harryPotter());
-    bookRepository.save(lordOfTheRings());
-    bookRepository.save(BookFixture.theTwoTowers());
-    bookRepository.save(new Book("6453424356", "The Return of the King", "JRR Tolkien", BookType.NOVEL));
-    bookRepository.save(new Book("2534646466", "The Fellowship of the Ring", "JRR Tolkien", BookType.NOVEL));
-    bookRepository.save(BookFixture.theHobbit());
+    books.save(harryPotter());
+    books.save(lordOfTheRings());
+    books.save(BookFixture.theTwoTowers());
+    books.save(new Book("6453424356", "The Return of the King", "JRR Tolkien", BookType.NOVEL));
+    books.save(new Book("2534646466", "The Fellowship of the Ring", "JRR Tolkien", BookType.NOVEL));
+    books.save(BookFixture.theHobbit());
   }
 }

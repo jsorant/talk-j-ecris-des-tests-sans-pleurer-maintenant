@@ -4,24 +4,24 @@ import com.jsorant.library.domain.Book;
 import com.jsorant.library.domain.BookBorrowedEmail;
 import com.jsorant.library.domain.Borrow;
 import com.jsorant.library.domain.ports.BookRepository;
-import com.jsorant.library.domain.ports.BorrowsRepository;
+import com.jsorant.library.domain.ports.BorrowRepository;
 import com.jsorant.library.domain.ports.EmailSender;
 import java.time.Instant;
 import java.util.Optional;
 
 public class BorrowBook {
 
-  private final BookRepository bookRepository;
-  private final BorrowsRepository borrowsRepository;
+  private final BookRepository books;
+  private final BorrowRepository borrows;
   private final EmailSender emailSender;
 
   private String bookId;
   private String borrowerEmail;
   private Instant date;
 
-  public BorrowBook(BookRepository bookRepository, BorrowsRepository borrowsRepository, EmailSender emailSender) {
-    this.bookRepository = bookRepository;
-    this.borrowsRepository = borrowsRepository;
+  public BorrowBook(BookRepository books, BorrowRepository borrows, EmailSender emailSender) {
+    this.books = books;
+    this.borrows = borrows;
     this.emailSender = emailSender;
   }
 
@@ -45,17 +45,17 @@ public class BorrowBook {
   }
 
   public void act() {
-    Optional<Book> book = bookRepository.get(bookId);
+    Optional<Book> book = books.get(bookId);
 
     if (book.isEmpty()) {
       throw new RuntimeException("Cannot borrow book with id " + bookId + " because it does not exist");
     }
 
-    if (borrowsRepository.findForBookId(bookId).isPresent()) {
+    if (borrows.findForBookId(bookId).isPresent()) {
       throw new RuntimeException("Cannot borrow book with id " + bookId + " because it is not available");
     }
 
-    int borrowsCount = borrowsRepository.borrowsCountForBorrower(borrowerEmail);
+    int borrowsCount = borrows.borrowsCountForBorrower(borrowerEmail);
     if (borrowsCount >= 4) {
       throw new RuntimeException(
         "Cannot borrow book with id " + bookId + " because user " + borrowerEmail + " has already four books borrowed"
@@ -63,7 +63,7 @@ public class BorrowBook {
     }
 
     Borrow borrow = new Borrow(borrowerEmail, bookId, date);
-    borrowsRepository.save(borrow);
+    borrows.save(borrow);
 
     emailSender.send(new BookBorrowedEmail(borrowerEmail, book.get().title(), date));
   }
