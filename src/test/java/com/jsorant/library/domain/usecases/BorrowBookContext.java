@@ -6,7 +6,6 @@ import static com.jsorant.library.domain.BookFixture.lordOfTheRings;
 import com.jsorant.library.domain.Book;
 import com.jsorant.library.domain.BookFixture;
 import com.jsorant.library.domain.BookType;
-import com.jsorant.library.secondary.FakeEmailSender;
 import com.jsorant.library.secondary.InMemoryBookRepository;
 import com.jsorant.library.secondary.InMemoryBorrowRepository;
 
@@ -14,16 +13,11 @@ public class BorrowBookContext {
 
   private final InMemoryBookRepository books = new InMemoryBookRepository();
   private final InMemoryBorrowRepository borrows = new InMemoryBorrowRepository();
-  private final FakeEmailSender emailSender = new FakeEmailSender();
 
-  private final BorrowBook borrowBook = new BorrowBook(books, borrows, emailSender);
+  private final BorrowBook borrowBook = new BorrowBook(books, borrows);
 
   public BorrowBookContext() {
     populateBookRepository();
-  }
-
-  public FakeEmailSender emailSender() {
-    return emailSender;
   }
 
   public BorrowBook getSut() {

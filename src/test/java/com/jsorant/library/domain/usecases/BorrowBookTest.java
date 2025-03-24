@@ -5,10 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.jsorant.UnitTest;
 import com.jsorant.library.domain.Book;
-import com.jsorant.library.domain.BookBorrowedEmail;
+import com.jsorant.library.domain.BookBorrowed;
 import com.jsorant.library.domain.BookType;
 import com.jsorant.library.domain.Borrows;
-import com.jsorant.library.secondary.FakeEmailSender;
 import com.jsorant.library.secondary.InMemoryBookRepository;
 import com.jsorant.library.secondary.InMemoryBorrowRepository;
 import java.time.Instant;
@@ -23,8 +22,7 @@ public class BorrowBookTest {
     InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
 
     try {
-      FakeEmailSender emailSender = new FakeEmailSender();
-      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository, emailSender)
+      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository)
         .as("jeremy.sorant@domain.fr")
         .bookId("1234567891")
         .date(Instant.parse("2025-04-14T10:00:00Z"));
@@ -49,8 +47,7 @@ public class BorrowBookTest {
     borrowsRepository.save(aliceBorrows);
 
     try {
-      FakeEmailSender emailSender = new FakeEmailSender();
-      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository, emailSender)
+      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository)
         .as("jeremy.sorant@domain.fr")
         .bookId("1234567890")
         .date(Instant.parse("2025-04-14T10:00:00Z"));
@@ -82,8 +79,7 @@ public class BorrowBookTest {
     borrowsRepository.save(aliceBorrows);
 
     try {
-      FakeEmailSender emailSender = new FakeEmailSender();
-      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository, emailSender)
+      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository)
         .as("alice.doe@domain.fr")
         .bookId("1234567890")
         .date(Instant.parse("2025-04-14T10:00:00Z"));
@@ -108,18 +104,13 @@ public class BorrowBookTest {
 
     InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
 
-    FakeEmailSender emailSender = new FakeEmailSender();
-
-    BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository, emailSender)
+    BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository)
       .as("jeremy.sorant@domain.fr")
       .bookId("1234567890")
       .date(Instant.parse("2025-04-14T10:00:00Z"));
 
-    borrowBook.act();
+    BookBorrowed event = borrowBook.act();
 
-    assertEquals(
-      new BookBorrowedEmail("jeremy.sorant@domain.fr", "The Hobbit", Instant.parse("2025-04-14T10:00:00Z")),
-      emailSender.lastEmailSent()
-    );
+    assertEquals(new BookBorrowed("jeremy.sorant@domain.fr", "1234567890", Instant.parse("2025-04-14T10:00:00Z")), event);
   }
 }

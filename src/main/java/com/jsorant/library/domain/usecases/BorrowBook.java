@@ -1,28 +1,23 @@
 package com.jsorant.library.domain.usecases;
 
-import com.jsorant.library.domain.Book;
-import com.jsorant.library.domain.BookBorrowedEmail;
+import com.jsorant.library.domain.BookBorrowed;
 import com.jsorant.library.domain.Borrows;
 import com.jsorant.library.domain.ports.BookRepository;
 import com.jsorant.library.domain.ports.BorrowRepository;
-import com.jsorant.library.domain.ports.EmailSender;
 import java.time.Instant;
-import java.util.Optional;
 
 public class BorrowBook {
 
   private final BookRepository books;
   private final BorrowRepository borrows;
-  private final EmailSender emailSender;
 
   private String bookId;
   private String borrowerEmail;
   private Instant date;
 
-  public BorrowBook(BookRepository books, BorrowRepository borrows, EmailSender emailSender) {
+  public BorrowBook(BookRepository books, BorrowRepository borrows) {
     this.books = books;
     this.borrows = borrows;
-    this.emailSender = emailSender;
   }
 
   public BorrowBook as(String borrowerEmail) {
@@ -40,12 +35,12 @@ public class BorrowBook {
     return this;
   }
 
-  public void borrow(String userEmail, String bookId, Instant date) {
-    this.as(userEmail).bookId(bookId).date(date).act();
+  public BookBorrowed borrow(String userEmail, String bookId, Instant date) {
+    return this.as(userEmail).bookId(bookId).date(date).act();
   }
 
-  public void act() {
-    Book book = retrieveBook();
+  public BookBorrowed act() {
+    ensureBookExists();
 
     ensureBookIsNotAlreadyBorrowed();
 
@@ -53,7 +48,7 @@ public class BorrowBook {
 
     borrows.save(borrowsForBorrower);
 
-    emailSender.send(new BookBorrowedEmail(borrowerEmail, book.title(), date));
+    return new BookBorrowed(borrowerEmail, bookId, date);
   }
 
   private void ensureBookIsNotAlreadyBorrowed() {
@@ -62,12 +57,9 @@ public class BorrowBook {
     }
   }
 
-  private Book retrieveBook() {
-    Optional<Book> book = books.get(bookId);
-
-    if (book.isEmpty()) {
+  private void ensureBookExists() {
+    if (books.get(bookId).isEmpty()) {
       throw new RuntimeException("Cannot borrow book with id " + bookId + " because it does not exist");
     }
-    return book.get();
   }
 }

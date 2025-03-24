@@ -2,13 +2,13 @@ package com.jsorant.library.domain.usecases;
 
 import static com.jsorant.library.domain.BookFixture.*;
 import static com.jsorant.library.domain.usecases.BorrowBookFixture.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.jsorant.UnitTest;
 import com.jsorant.library.domain.*;
-import com.jsorant.library.secondary.FakeEmailSender;
 import com.jsorant.library.secondary.InMemoryBookRepository;
 import com.jsorant.library.secondary.InMemoryBorrowRepository;
 import java.time.Instant;
@@ -32,10 +32,11 @@ public class CleanedBorrowBookTest {
 
   @Test
   void shouldSendAnEmailToTheBorrowerWhenBookIsBorrowed() {
-    borrowBook.borrow(borrowerEmail(), bookToBorrow().id(), borrowDate());
+    BookBorrowed event = borrowBook.borrow(borrowerEmail(), bookToBorrow().id(), borrowDate());
 
-    BookBorrowedEmail expectedEmail = new BookBorrowedEmail(borrowerEmail(), bookToBorrow().title(), borrowDate());
-    context.emailSender().assertLastEmailSentIs(expectedEmail);
+    BookBorrowed expectedEvent = new BookBorrowed(borrowerEmail(), bookToBorrow().id(), borrowDate());
+
+    assertThat(event).isEqualTo(expectedEvent);
   }
 
   @Test
@@ -51,11 +52,7 @@ public class CleanedBorrowBookTest {
 
     // test book already borrowed
     try {
-      FakeEmailSender emailSender = new FakeEmailSender();
-      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository, emailSender)
-        .as(borrowerEmail())
-        .bookId("1234567890")
-        .date(borrowDate());
+      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository).as(borrowerEmail()).bookId("1234567890").date(borrowDate());
 
       borrowBook.act();
 
@@ -85,11 +82,7 @@ public class CleanedBorrowBookTest {
 
     // test has already four books borrowed
     try {
-      FakeEmailSender emailSender = new FakeEmailSender();
-      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository, emailSender)
-        .as(borrowerEmail())
-        .bookId("1234567890")
-        .date(borrowDate());
+      BorrowBook borrowBook = new BorrowBook(bookRepository, borrowsRepository).as(borrowerEmail()).bookId("1234567890").date(borrowDate());
 
       borrowBook.act();
 
