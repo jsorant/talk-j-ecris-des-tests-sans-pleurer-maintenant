@@ -44,6 +44,15 @@ public class TestSuite {
             assertEquals(true, e instanceof BookAlreadyBorrowedException);
             assertEquals("1234567890", ((BookAlreadyBorrowedException) e).bookId());
         }
+    }
+
+    @Test
+    void test2() {
+        InMemoryBookRepository bookRepository = new InMemoryBookRepository();
+        InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
+        bookRepository.save(new Book("3214515512", "The Lord of the Rings", "JRR Tolkien", BookType.NOVEL));
+        bookRepository.save(new Book("1234567890", "The Hobbit", "JRR Tolkien", BookType.NOVEL));
+        bookRepository.save(new Book("4083U14844", "Harry Potter and the Philosopher's Stone", "JK Rowling", BookType.NOVEL));
         BookBorrowed result = new BorrowBook(bookRepository, borrowsRepository)
                 .as("alice.doe@domain.fr")
                 .bookId("3214515512")
@@ -53,7 +62,7 @@ public class TestSuite {
     }
 
     @Test
-    void test2() {
+    void test3() {
         InMemoryBookRepository bookRepository = new InMemoryBookRepository();
         InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
 
@@ -72,7 +81,7 @@ public class TestSuite {
     }
 
     @Test
-    void test3() {
+    void test4() {
         InMemoryBookRepository bookRepository = new InMemoryBookRepository();
         bookRepository.save(new Book("4083U14844", "Harry Potter and the Philosopher's Stone", "JK Rowling", BookType.NOVEL));
         bookRepository.save(new Book("3214515512", "The Lord of the Rings", "JRR Tolkien", BookType.NOVEL));
@@ -102,23 +111,5 @@ public class TestSuite {
             assertEquals("1234567890", ((BorrowerHasAlreadyFourBooksBorrowedException) e).bookId());
             assertEquals("alice.doe@domain.fr", ((BorrowerHasAlreadyFourBooksBorrowedException) e).borrowerEmail());
         }
-    }
-
-    @Test
-    void test4() {
-        InMemoryBookRepository bookRepository = new InMemoryBookRepository();
-        bookRepository.save(new Book("3214515512", "The Lord of the Rings", "JRR Tolkien", BookType.NOVEL));
-        bookRepository.save(new Book("1234567890", "The Hobbit", "JRR Tolkien", BookType.NOVEL));
-        bookRepository.save(new Book("4083U14844", "Harry Potter and the Philosopher's Stone", "JK Rowling", BookType.NOVEL));
-
-        InMemoryBorrowRepository borrowsRepository = new InMemoryBorrowRepository();
-
-        BookBorrowed event = new BorrowBook(bookRepository, borrowsRepository)
-                .as("alice.doe@domain.fr")
-                .bookId("1234567890")
-                .date(Instant.parse("2025-04-14T10:00:00Z"))
-                .act();
-
-        assertEquals(new BookBorrowed("alice.doe@domain.fr", "1234567890", Instant.parse("2025-04-14T10:00:00Z")), event);
     }
 }
