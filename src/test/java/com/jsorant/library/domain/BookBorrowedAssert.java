@@ -10,10 +10,6 @@ public class BookBorrowedAssert extends AbstractAssert<BookBorrowedAssert, BookB
         super(actual, BookBorrowedAssert.class);
     }
 
-    public static BookBorrowedAssert assertThat(BookBorrowed event) {
-        return new BookBorrowedAssert(event);
-    }
-
     public BookBorrowedAssert refersToBorrower(String expectedEmail) {
         isNotNull();
         if (!actual.borrowerEmail().equals(expectedEmail)) {

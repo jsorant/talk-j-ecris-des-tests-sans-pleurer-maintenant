@@ -1,7 +1,6 @@
 package com.jsorant.library.domain.usecases;
 
 import com.jsorant.UnitTest;
-import com.jsorant.library.domain.BookBorrowedAssert;
 import com.jsorant.library.domain.events.BookBorrowed;
 import com.jsorant.library.domain.exceptions.BookAlreadyBorrowedException;
 import com.jsorant.library.domain.exceptions.BookNotOwnedByTheLibraryException;
@@ -9,6 +8,7 @@ import com.jsorant.library.domain.exceptions.BorrowerHasAlreadyFourBooksBorrowed
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.jsorant.library.LibraryAssertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @UnitTest
@@ -23,7 +23,7 @@ public class BorrowBookTest {
 
         BookBorrowed bookBorrowed = borrowBook.act();
 
-        BookBorrowedAssert.assertThat(bookBorrowed)
+        assertThat(bookBorrowed)
                 .refersToBook(context.bookToBorrowId())
                 .refersToBorrower(context.borrowerEmail())
                 .wasDoneOn(context.borrowDate());
