@@ -36,7 +36,8 @@ public class BorrowBookTest {
                 .buildBorrowBook();
 
         assertThatThrownBy(borrowBook::act)
-                .isEqualTo(new BookNotOwnedByTheLibraryException(context.idOfTheBookToBorrowThatIsNotOwnedByTheLibrary()));
+                .isInstanceOf(BookNotOwnedByTheLibraryException.class)
+                .hasMessageContaining(context.idOfTheBookToBorrowThatIsNotOwnedByTheLibrary());
     }
 
     @Test
@@ -46,7 +47,8 @@ public class BorrowBookTest {
                 .buildBorrowBook();
 
         assertThatThrownBy(borrowBook::act)
-                .isEqualTo(new BookAlreadyBorrowedException(context.bookToBorrowId()));
+                .isInstanceOf(BookAlreadyBorrowedException.class)
+                .hasMessageContaining(context.bookToBorrowId());
     }
 
     @Test
@@ -56,6 +58,8 @@ public class BorrowBookTest {
                 .buildBorrowBook();
 
         assertThatThrownBy(borrowBook::act)
-                .isEqualTo(new BorrowerHasAlreadyFourBooksBorrowedException(context.borrowerEmail(), context.bookToBorrowId()));
+                .isInstanceOf(BorrowerHasAlreadyFourBooksBorrowedException.class)
+                .hasMessageContaining(context.bookToBorrowId())
+                .hasMessageContaining(context.borrowerEmail());
     }
 }

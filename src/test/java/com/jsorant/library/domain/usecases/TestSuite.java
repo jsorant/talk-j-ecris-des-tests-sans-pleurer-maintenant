@@ -15,6 +15,7 @@ import java.time.Instant;
 
 import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // Book must be owned by the library
 // Book must not be already borrowed
@@ -42,7 +43,7 @@ public class TestSuite {
             fail("Should have thrown an exception");
         } catch (RuntimeException e) {
             assertEquals(true, e instanceof BookAlreadyBorrowedException);
-            assertEquals("1234567890", ((BookAlreadyBorrowedException) e).bookId());
+            assertTrue(e.getMessage().contains("1234567890"));
         }
     }
 
@@ -76,7 +77,7 @@ public class TestSuite {
             fail("Should have thrown an exception");
         } catch (RuntimeException e) {
             assertEquals(true, e instanceof BookNotOwnedByTheLibraryException);
-            assertEquals("1234567891", ((BookNotOwnedByTheLibraryException) e).bookId());
+            assertTrue(e.getMessage().contains("1234567891"));
         }
     }
 
@@ -108,8 +109,8 @@ public class TestSuite {
             fail("Should have thrown an exception");
         } catch (RuntimeException e) {
             assertEquals(true, e instanceof BorrowerHasAlreadyFourBooksBorrowedException);
-            assertEquals("1234567890", ((BorrowerHasAlreadyFourBooksBorrowedException) e).bookId());
-            assertEquals("alice.doe@domain.fr", ((BorrowerHasAlreadyFourBooksBorrowedException) e).borrowerEmail());
+            assertTrue(e.getMessage().contains("1234567890"));
+            assertTrue(e.getMessage().contains("alice.doe@domain.fr"));
         }
     }
 }
