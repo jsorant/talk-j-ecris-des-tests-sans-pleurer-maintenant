@@ -1,38 +1,47 @@
-package com.jsorant.library.domain.usecases;
+package com.jsorant.demo;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ExamplesTest {
+public class AssertionErrorMessagesTest {
 
     @Test
-    void list() {
+    void listWithAssertTrue() {
         List<Integer> ints = List.of(1, 2, 3);
 
         assertTrue(ints.isEmpty());
+    }
 
-        //assertThat(ints).isEmpty();
+    @Test
+    void listWithAssertThatIsEmpty() {
+        List<Integer> ints = List.of(1, 2, 3);
+
+        assertThat(ints).isEmpty();
     }
 
     @Test
     void optional() {
         Optional<String> maybeString = Optional.empty();
 
-        Assertions.assertThat(maybeString).contains("data");
+        assertThat(maybeString).contains("data");
+    }
+
+    @Test
+    void exceptionPrecise() {
+        assertThatThrownBy(() -> someCode())
+                .isExactlyInstanceOf(RuntimeException.class)
+                .hasMessage("Something went wrong");
     }
 
     @Test
     void exception() {
-        Assertions.assertThatThrownBy(() -> someCode())
-                .isExactlyInstanceOf(RuntimeException.class)
-                .hasMessage("Something went wrong");
-
-        Assertions.assertThatThrownBy(() -> someCode())
+        assertThatThrownBy(() -> someCode())
                 .isExactlyInstanceOf(RuntimeException.class)
                 .hasMessageContaining("wrong");
     }
