@@ -37,7 +37,7 @@ public class ReworkedBorrowBookTest {
 
         assertThatThrownBy(borrowBook::act)
                 .isInstanceOf(BookNotOwnedByTheLibraryException.class)
-                .hasMessageContaining(context.idOfTheBookToBorrowThatIsNotOwnedByTheLibrary());
+                .hasMessageContaining(context.idOfTheBookThatIsNotOwnedByTheLibrary());
     }
 
     @Test

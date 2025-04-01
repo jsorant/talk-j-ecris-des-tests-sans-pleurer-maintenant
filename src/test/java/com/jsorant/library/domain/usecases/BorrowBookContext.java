@@ -20,7 +20,7 @@ public class BorrowBookContext {
     private final Instant borrowDate = Instant.parse("2025-04-14T10:00:00Z");
 
     public BorrowBookContext() {
-        populateBookRepository();
+        populateLibraryWithSomeBooks();
     }
 
     public String bookToBorrowId() {
@@ -39,7 +39,7 @@ public class BorrowBookContext {
         return borrowDate;
     }
 
-    public String idOfTheBookToBorrowThatIsNotOwnedByTheLibrary() {
+    public String idOfTheBookThatIsNotOwnedByTheLibrary() {
         return notOwnedByTheLibraryBookId;
     }
 
@@ -73,7 +73,7 @@ public class BorrowBookContext {
                 .date(borrowDate);
     }
 
-    private void populateBookRepository() {
+    private void populateLibraryWithSomeBooks() {
         books.save(harryPotter());
         books.save(lordOfTheRings());
         books.save(theTwoTowers());
