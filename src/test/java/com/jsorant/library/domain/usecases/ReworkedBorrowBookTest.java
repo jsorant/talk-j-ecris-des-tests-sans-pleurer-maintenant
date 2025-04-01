@@ -30,17 +30,6 @@ public class ReworkedBorrowBookTest {
     }
 
     @Test
-    void shouldThrowWhenBookIsNotOwnedByTheLibrary() {
-        BorrowBook borrowBook = context
-                .butBorrowingABookThatIsNotOwnedByTheLibrary()
-                .buildBorrowBook();
-
-        assertThatThrownBy(borrowBook::act)
-                .isInstanceOf(BookNotOwnedByTheLibraryException.class)
-                .hasMessageContaining(context.idOfTheBookThatIsNotOwnedByTheLibrary());
-    }
-
-    @Test
     void shouldThrowWhenBookIsAlreadyBorrowed() {
         BorrowBook borrowBook = context
                 .butWithBookToBorrowAlreadyBorrowed()
@@ -49,6 +38,17 @@ public class ReworkedBorrowBookTest {
         assertThatThrownBy(borrowBook::act)
                 .isInstanceOf(BookAlreadyBorrowedException.class)
                 .hasMessageContaining(context.bookToBorrowId());
+    }
+
+    @Test
+    void shouldThrowWhenBookIsNotOwnedByTheLibrary() {
+        BorrowBook borrowBook = context
+                .butBorrowingABookThatIsNotOwnedByTheLibrary()
+                .buildBorrowBook();
+
+        assertThatThrownBy(borrowBook::act)
+                .isInstanceOf(BookNotOwnedByTheLibraryException.class)
+                .hasMessageContaining(context.idOfTheBookThatIsNotOwnedByTheLibrary());
     }
 
     @Test
