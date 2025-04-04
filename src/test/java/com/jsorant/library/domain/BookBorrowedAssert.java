@@ -19,11 +19,11 @@ public class BookBorrowedAssert extends AbstractAssert<BookBorrowedAssert, BookB
         return this;
     }
 
-    public BookBorrowedAssert refersToBook(String expectedBookId) {
+    public BookBorrowedAssert refersToBook(Book expectedBook) {
         isNotNull();
-        if (!actual.bookId().equals(expectedBookId)) {
+        if (!actual.bookId().equals(expectedBook.id())) {
             failWithMessage("Expected book ID to be '%s' but was '%s'",
-                    expectedBookId, actual.bookId());
+                    expectedBook, actual.bookId());
         }
         return this;
     }

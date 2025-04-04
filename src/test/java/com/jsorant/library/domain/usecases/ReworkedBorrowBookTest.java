@@ -24,7 +24,7 @@ public class ReworkedBorrowBookTest {
         BookBorrowed bookBorrowed = borrowBook.act();
 
         assertThat(bookBorrowed)
-                .refersToBook(context.bookToBorrowId())
+                .refersToBook(context.bookToBorrow())
                 .refersToBorrower(context.borrowerEmail())
                 .wasDoneOn(context.borrowDate());
     }

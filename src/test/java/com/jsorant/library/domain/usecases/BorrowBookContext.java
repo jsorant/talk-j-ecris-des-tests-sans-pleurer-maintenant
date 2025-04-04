@@ -1,5 +1,6 @@
 package com.jsorant.library.domain.usecases;
 
+import com.jsorant.library.domain.Book;
 import com.jsorant.library.domain.Borrows;
 import com.jsorant.library.secondary.InMemoryBookRepository;
 import com.jsorant.library.secondary.InMemoryBorrowRepository;
@@ -13,8 +14,8 @@ public class BorrowBookContext {
     private final InMemoryBookRepository books = new InMemoryBookRepository();
     private final InMemoryBorrowRepository borrows = new InMemoryBorrowRepository();
 
-    private String bookToBorrowId = theHobbit().id();
-    private final String notOwnedByTheLibraryBookId = hungerGames().id();
+    private Book bookToBorrow = theHobbit();
+    private final Book notOwnedByTheLibraryBook = hungerGames();
     private final String borrowerEmail = "alice.doe@domain.fr";
     private final String anotherBorrowerEmail = "bob.doe@domain.fr";
     private final Instant borrowDate = Instant.parse("2025-04-14T10:00:00Z");
@@ -24,7 +25,11 @@ public class BorrowBookContext {
     }
 
     public String bookToBorrowId() {
-        return bookToBorrowId;
+        return bookToBorrow.id();
+    }
+
+    public Book bookToBorrow() {
+        return bookToBorrow;
     }
 
     public String borrowerEmail() {
@@ -40,11 +45,11 @@ public class BorrowBookContext {
     }
 
     public String idOfTheBookThatIsNotOwnedByTheLibrary() {
-        return notOwnedByTheLibraryBookId;
+        return notOwnedByTheLibraryBook.id();
     }
 
     public BorrowBookContext butBorrowingABookThatIsNotOwnedByTheLibrary() {
-        bookToBorrowId = notOwnedByTheLibraryBookId;
+        bookToBorrow = notOwnedByTheLibraryBook;
 
         return this;
     }
@@ -59,7 +64,7 @@ public class BorrowBookContext {
     }
 
     public BorrowBookContext butWithBookToBorrowAlreadyBorrowed() {
-        Borrows anotherBorrowerBorrows = new Borrows(anotherBorrowerEmail()).borrow(bookToBorrowId, borrowDate);
+        Borrows anotherBorrowerBorrows = new Borrows(anotherBorrowerEmail()).borrow(bookToBorrow.id(), borrowDate);
 
         borrows.save(anotherBorrowerBorrows);
 
@@ -69,7 +74,7 @@ public class BorrowBookContext {
     public BorrowBook buildBorrowBook() {
         return new BorrowBook(books, borrows)
                 .as(borrowerEmail)
-                .bookId(bookToBorrowId)
+                .bookId(bookToBorrow.id())
                 .date(borrowDate);
     }
 
