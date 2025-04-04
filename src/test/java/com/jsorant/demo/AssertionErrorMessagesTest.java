@@ -16,13 +16,13 @@ public class AssertionErrorMessagesTest {
         List<Integer> ints = List.of(1, 2, 3);
 
         assertTrue(ints.isEmpty());
-    }
 
-    @Test
-    void listWithAssertThatIsEmpty() {
-        List<Integer> ints = List.of(1, 2, 3);
-
-        assertThat(ints).isEmpty();
+        //assertThat(ints).isEmpty();
+        //assertThat(ints).isNotEmpty();
+        //assertThat(ints).hasSize(3);
+        //assertThat(ints).contains(1);
+        //assertThat(ints).containsAll(List.of(1, 2));
+        //assertThat(ints).containsExactly(1, 2, 3);
     }
 
     @Test
@@ -30,6 +30,7 @@ public class AssertionErrorMessagesTest {
         Optional<String> maybeString = Optional.empty();
 
         assertThat(maybeString).contains("data");
+        assertThat(maybeString).isEmpty();
     }
 
     @Test
