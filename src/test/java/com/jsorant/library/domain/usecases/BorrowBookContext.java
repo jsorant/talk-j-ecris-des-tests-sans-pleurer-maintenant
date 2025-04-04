@@ -6,6 +6,7 @@ import com.jsorant.library.secondary.InMemoryBookRepository;
 import com.jsorant.library.secondary.InMemoryBorrowRepository;
 
 import java.time.Instant;
+import java.util.List;
 
 import static com.jsorant.library.domain.BookFixture.*;
 
@@ -14,8 +15,17 @@ public class BorrowBookContext {
     private final InMemoryBookRepository books = new InMemoryBookRepository();
     private final InMemoryBorrowRepository borrows = new InMemoryBorrowRepository();
 
-    private Book bookToBorrow = theHobbit();
+    private final List<Book> booksOwnedByTheLibrary = List.of(
+            harryPotter(),
+            lordOfTheRings(),
+            theTwoTowers(),
+            theReturnOfTheKing(),
+            theFellowshipOfTheRing(),
+            theHobbit()
+    );
+    
     private final Book notOwnedByTheLibraryBook = hungerGames();
+    private Book bookToBorrow = theHobbit();
     private final String borrowerEmail = "alice.doe@domain.fr";
     private final String anotherBorrowerEmail = "bob.doe@domain.fr";
     private final Instant borrowDate = Instant.parse("2025-04-14T10:00:00Z");
@@ -55,16 +65,17 @@ public class BorrowBookContext {
     }
 
     public BorrowBookContext butWithAlreadyFourBooksBorrowed() {
-        borrow(lordOfTheRings().id());
-        borrow(harryPotter().id());
-        borrow(theTwoTowers().id());
-        borrow(theReturnOfTheKing().id());
+        borrow(lordOfTheRings());
+        borrow(harryPotter());
+        borrow(theTwoTowers());
+        borrow(theReturnOfTheKing());
 
         return this;
     }
 
     public BorrowBookContext butWithBookToBorrowAlreadyBorrowed() {
-        Borrows anotherBorrowerBorrows = new Borrows(anotherBorrowerEmail()).borrow(bookToBorrow.id(), borrowDate);
+        Borrows anotherBorrowerBorrows = new Borrows(anotherBorrowerEmail())
+                .borrow(bookToBorrow.id(), borrowDate);
 
         borrows.save(anotherBorrowerBorrows);
 
@@ -79,18 +90,13 @@ public class BorrowBookContext {
     }
 
     private void populateLibraryWithSomeBooks() {
-        books.save(harryPotter());
-        books.save(lordOfTheRings());
-        books.save(theTwoTowers());
-        books.save(theReturnOfTheKing());
-        books.save(theFellowshipOfTheRing());
-        books.save(theHobbit());
+        booksOwnedByTheLibrary.forEach(books::save);
     }
 
-    private void borrow(String bookId) {
+    private void borrow(Book book) {
         new BorrowBook(books, borrows)
                 .as(borrowerEmail)
-                .bookId(bookId)
+                .bookId(book.id())
                 .date(borrowDate)
                 .act();
     }
