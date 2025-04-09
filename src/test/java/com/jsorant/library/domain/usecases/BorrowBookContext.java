@@ -1,7 +1,6 @@
 package com.jsorant.library.domain.usecases;
 
 import com.jsorant.library.domain.Book;
-import com.jsorant.library.domain.Borrows;
 import com.jsorant.library.secondary.InMemoryBookRepository;
 import com.jsorant.library.secondary.InMemoryBorrowRepository;
 
@@ -21,10 +20,10 @@ public class BorrowBookContext {
             theTwoTowers(),
             theReturnOfTheKing(),
             theFellowshipOfTheRing(),
-            theHobbit()
+            theHobbit(),
+            hungerGames()
     );
-    
-    private final Book notOwnedByTheLibraryBook = hungerGames();
+
     private Book bookToBorrow = theHobbit();
     private final String borrowerEmail = "alice.doe@domain.fr";
     private final String anotherBorrowerEmail = "bob.doe@domain.fr";
@@ -32,14 +31,6 @@ public class BorrowBookContext {
 
     public BorrowBookContext() {
         populateLibraryWithSomeBooks();
-    }
-
-    public String bookToBorrowId() {
-        return bookToBorrow.id();
-    }
-
-    public Book bookToBorrow() {
-        return bookToBorrow;
     }
 
     public String borrowerEmail() {
@@ -54,30 +45,30 @@ public class BorrowBookContext {
         return borrowDate;
     }
 
-    public String idOfTheBookThatIsNotOwnedByTheLibrary() {
-        return notOwnedByTheLibraryBook.id();
-    }
-
-    public BorrowBookContext butBorrowingABookThatIsNotOwnedByTheLibrary() {
-        bookToBorrow = notOwnedByTheLibraryBook;
+    public BorrowBookContext withBookToBorrow(Book book) {
+        bookToBorrow = book;
 
         return this;
     }
 
-    public BorrowBookContext butWithAlreadyFourBooksBorrowed() {
-        borrow(lordOfTheRings());
-        borrow(harryPotter());
-        borrow(theTwoTowers());
-        borrow(theReturnOfTheKing());
+    public BorrowBookContext withBookBorrowedBySomeoneElse(Book book) {
+        new BorrowBook(books, borrows)
+                .as(anotherBorrowerEmail())
+                .bookId(book.id())
+                .date(borrowDate)
+                .act();
 
         return this;
     }
 
-    public BorrowBookContext butWithBookToBorrowAlreadyBorrowed() {
-        Borrows anotherBorrowerBorrows = new Borrows(anotherBorrowerEmail())
-                .borrow(bookToBorrow.id(), borrowDate);
+    public BorrowBookContext withBookNotOwnedByTheLibrary(Book book) {
+        books.remove(book);
 
-        borrows.save(anotherBorrowerBorrows);
+        return this;
+    }
+
+    public BorrowBookContext withBooksBorrowed(Book... books) {
+        List.of(books).forEach(this::borrow);
 
         return this;
     }

@@ -20,4 +20,8 @@ public class InMemoryBookRepository implements BookRepository {
     public Optional<Book> get(String id) {
         return Optional.ofNullable(books.get(id));
     }
+
+    public void remove(Book book) {
+        books.remove(book.id());
+    }
 }

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.jsorant.library.LibraryAssertions.assertThat;
+import static com.jsorant.library.domain.BookFixture.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @UnitTest
@@ -19,12 +20,14 @@ public class ReworkedBorrowBookTest {
 
     @Test
     void shouldReturnBookBorrowedEventWhenBookIsBorrowed() {
-        BorrowBook borrowBook = context.buildBorrowBook();
+        BorrowBook borrowBook = context
+                .withBookToBorrow(theHobbit())
+                .buildBorrowBook();
 
         BookBorrowed bookBorrowed = borrowBook.act();
 
         assertThat(bookBorrowed)
-                .refersToBook(context.bookToBorrow())
+                .refersToBook(theHobbit())
                 .refersToBorrower(context.borrowerEmail())
                 .wasDoneOn(context.borrowDate());
     }
@@ -32,34 +35,41 @@ public class ReworkedBorrowBookTest {
     @Test
     void shouldThrowWhenBookIsAlreadyBorrowed() {
         BorrowBook borrowBook = context
-                .butWithBookToBorrowAlreadyBorrowed()
+                .withBookBorrowedBySomeoneElse(lordOfTheRings())
+                .withBookToBorrow(lordOfTheRings())
                 .buildBorrowBook();
 
         assertThatThrownBy(borrowBook::act)
                 .isInstanceOf(BookAlreadyBorrowedException.class)
-                .hasMessageContaining(context.bookToBorrowId());
+                .hasMessageContaining(lordOfTheRings().id());
     }
 
     @Test
     void shouldThrowWhenBookIsNotOwnedByTheLibrary() {
         BorrowBook borrowBook = context
-                .butBorrowingABookThatIsNotOwnedByTheLibrary()
+                .withBookNotOwnedByTheLibrary(hungerGames())
+                .withBookToBorrow(hungerGames())
                 .buildBorrowBook();
 
         assertThatThrownBy(borrowBook::act)
                 .isInstanceOf(BookNotOwnedByTheLibraryException.class)
-                .hasMessageContaining(context.idOfTheBookThatIsNotOwnedByTheLibrary());
+                .hasMessageContaining(hungerGames().id());
     }
 
     @Test
     void shouldThrowWhenBorrowerHasAlreadyFourBooksBorrowed() {
         BorrowBook borrowBook = context
-                .butWithAlreadyFourBooksBorrowed()
+                .withBooksBorrowed(
+                        lordOfTheRings(),
+                        harryPotter(),
+                        theTwoTowers(),
+                        theReturnOfTheKing())
+                .withBookToBorrow(theHobbit())
                 .buildBorrowBook();
 
         assertThatThrownBy(borrowBook::act)
                 .isInstanceOf(BorrowerHasAlreadyFourBooksBorrowedException.class)
-                .hasMessageContaining(context.bookToBorrowId())
+                .hasMessageContaining(theHobbit().id())
                 .hasMessageContaining(context.borrowerEmail());
     }
 }
