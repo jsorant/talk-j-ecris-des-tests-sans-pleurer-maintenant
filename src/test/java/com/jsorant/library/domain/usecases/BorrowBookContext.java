@@ -8,6 +8,8 @@ import java.time.Instant;
 import java.util.List;
 
 import static com.jsorant.library.domain.BookFixture.*;
+import static com.jsorant.library.domain.BorrowFixture.aDate;
+import static com.jsorant.library.domain.UserFixture.alice;
 import static com.jsorant.library.domain.UserFixture.bob;
 
 public class BorrowBookContext {
@@ -15,19 +17,9 @@ public class BorrowBookContext {
     private final InMemoryBookRepository books = new InMemoryBookRepository();
     private final InMemoryBorrowRepository borrows = new InMemoryBorrowRepository();
 
-    private final List<Book> booksOwnedByTheLibrary = List.of(
-            harryPotter(),
-            lordOfTheRings(),
-            theTwoTowers(),
-            theReturnOfTheKing(),
-            theFellowshipOfTheRing(),
-            theHobbit(),
-            hungerGames()
-    );
-
     private Book bookToBorrow = theHobbit();
-    private String borrowerEmail = "alice.doe@domain.fr";
-    private Instant borrowDate = Instant.parse("2025-04-14T10:00:00Z");
+    private String borrowerEmail = alice();
+    private Instant borrowDate = aDate();
 
     public BorrowBookContext() {
         populateLibraryWithSomeBooks();
@@ -68,7 +60,7 @@ public class BorrowBookContext {
         return this;
     }
 
-    public BorrowBook build() {
+    public BorrowBook buildUseCase() {
         return new BorrowBook(books, borrows)
                 .by(borrowerEmail)
                 .bookId(bookToBorrow.id())
@@ -76,7 +68,15 @@ public class BorrowBookContext {
     }
 
     private void populateLibraryWithSomeBooks() {
-        booksOwnedByTheLibrary.forEach(books::save);
+        List.of(
+                harryPotter(),
+                lordOfTheRings(),
+                theTwoTowers(),
+                theReturnOfTheKing(),
+                theFellowshipOfTheRing(),
+                theHobbit(),
+                hungerGames()
+        ).forEach(books::save);
     }
 
     private void borrow(Book book) {

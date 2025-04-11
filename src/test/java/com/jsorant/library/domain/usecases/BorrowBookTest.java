@@ -1,6 +1,5 @@
 package com.jsorant.library.domain.usecases;
 
-import com.jsorant.UnitTest;
 import com.jsorant.library.domain.Book;
 import com.jsorant.library.domain.BookType;
 import com.jsorant.library.domain.Borrows;
@@ -10,7 +9,6 @@ import com.jsorant.library.domain.exceptions.BookNotOwnedByTheLibraryException;
 import com.jsorant.library.domain.exceptions.BorrowerHasAlreadyFourBooksBorrowedException;
 import com.jsorant.library.secondary.InMemoryBookRepository;
 import com.jsorant.library.secondary.InMemoryBorrowRepository;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -19,13 +17,6 @@ import static org.assertj.core.api.Fail.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// Book must be owned by the library
-// Book must not be already borrowed
-// Borrower must not be already borrowing four books
-// DomainEvent must be returned
-
-@DisplayName("Borrow a book")
-@UnitTest
 public class BorrowBookTest {
 
     @Test

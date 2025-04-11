@@ -8,10 +8,9 @@ import com.jsorant.library.domain.exceptions.BorrowerHasAlreadyFourBooksBorrowed
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.Instant;
-
 import static com.jsorant.library.LibraryAssertions.assertThat;
 import static com.jsorant.library.domain.BookFixture.*;
+import static com.jsorant.library.domain.BorrowFixture.aDate;
 import static com.jsorant.library.domain.UserFixture.alice;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -22,28 +21,12 @@ public class ReworkedBorrowBookTest {
     BorrowBookContext context = new BorrowBookContext();
 
     @Test
-    void shouldReturnBookBorrowedEventWhenBookIsBorrowed() {
-        BorrowBook borrowBook = context
-                .withBookToBorrow(theHobbit())
-                .by(alice())
-                .on(aDate())
-                .build();
-
-        BookBorrowed bookBorrowed = borrowBook.act();
-
-        assertThat(bookBorrowed)
-                .refersToBook(theHobbit())
-                .refersToBorrower(alice())
-                .wasDoneOn(aDate());
-    }
-
-    @Test
     void shouldThrowWhenBookIsAlreadyBorrowed() {
         context.withBookBorrowedByBob(lordOfTheRings());
 
         BorrowBook borrowBook = context
                 .withBookToBorrow(lordOfTheRings())
-                .build();
+                .buildUseCase();
 
         assertThatThrownBy(borrowBook::act)
                 .isInstanceOf(BookAlreadyBorrowedException.class)
@@ -56,7 +39,7 @@ public class ReworkedBorrowBookTest {
 
         BorrowBook borrowBook = context
                 .withBookToBorrow(hungerGames())
-                .build();
+                .buildUseCase();
 
         assertThatThrownBy(borrowBook::act)
                 .isInstanceOf(BookNotOwnedByTheLibraryException.class)
@@ -69,19 +52,33 @@ public class ReworkedBorrowBookTest {
                 lordOfTheRings(),
                 harryPotter(),
                 theTwoTowers(),
-                theReturnOfTheKing());
+                theReturnOfTheKing()
+        );
 
         BorrowBook borrowBook = context
                 .withBookToBorrow(theHobbit())
-                .build();
+                .by(alice())
+                .buildUseCase();
 
         assertThatThrownBy(borrowBook::act)
                 .isInstanceOf(BorrowerHasAlreadyFourBooksBorrowedException.class)
                 .hasMessageContaining(theHobbit().id())
-                .hasMessageContaining(context.borrowerEmail());
+                .hasMessageContaining(alice());
     }
 
-    private static Instant aDate() {
-        return Instant.parse("2025-04-14T10:00:00Z");
+    @Test
+    void shouldReturnBookBorrowedEventWhenBookIsBorrowed() {
+        BorrowBook borrowBook = context
+                .withBookToBorrow(theHobbit())
+                .by(alice())
+                .on(aDate())
+                .buildUseCase();
+
+        BookBorrowed bookBorrowed = borrowBook.act();
+
+        assertThat(bookBorrowed)
+                .refersToBook(theHobbit())
+                .refersToBorrower(alice())
+                .wasDoneOn(aDate());
     }
 }
