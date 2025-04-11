@@ -8,8 +8,11 @@ import com.jsorant.library.domain.exceptions.BorrowerHasAlreadyFourBooksBorrowed
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
+
 import static com.jsorant.library.LibraryAssertions.assertThat;
 import static com.jsorant.library.domain.BookFixture.*;
+import static com.jsorant.library.domain.UserFixture.alice;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @UnitTest
@@ -22,22 +25,25 @@ public class ReworkedBorrowBookTest {
     void shouldReturnBookBorrowedEventWhenBookIsBorrowed() {
         BorrowBook borrowBook = context
                 .withBookToBorrow(theHobbit())
-                .buildBorrowBook();
+                .by(alice())
+                .on(aDate())
+                .build();
 
         BookBorrowed bookBorrowed = borrowBook.act();
 
         assertThat(bookBorrowed)
                 .refersToBook(theHobbit())
-                .refersToBorrower(context.borrowerEmail())
-                .wasDoneOn(context.borrowDate());
+                .refersToBorrower(alice())
+                .wasDoneOn(aDate());
     }
 
     @Test
     void shouldThrowWhenBookIsAlreadyBorrowed() {
+        context.withBookBorrowedByBob(lordOfTheRings());
+
         BorrowBook borrowBook = context
-                .withBookBorrowedBySomeoneElse(lordOfTheRings())
                 .withBookToBorrow(lordOfTheRings())
-                .buildBorrowBook();
+                .build();
 
         assertThatThrownBy(borrowBook::act)
                 .isInstanceOf(BookAlreadyBorrowedException.class)
@@ -46,10 +52,11 @@ public class ReworkedBorrowBookTest {
 
     @Test
     void shouldThrowWhenBookIsNotOwnedByTheLibrary() {
+        context.withBookNotOwnedByTheLibrary(hungerGames());
+
         BorrowBook borrowBook = context
-                .withBookNotOwnedByTheLibrary(hungerGames())
                 .withBookToBorrow(hungerGames())
-                .buildBorrowBook();
+                .build();
 
         assertThatThrownBy(borrowBook::act)
                 .isInstanceOf(BookNotOwnedByTheLibraryException.class)
@@ -58,18 +65,23 @@ public class ReworkedBorrowBookTest {
 
     @Test
     void shouldThrowWhenBorrowerHasAlreadyFourBooksBorrowed() {
+        context.withBooksBorrowed(
+                lordOfTheRings(),
+                harryPotter(),
+                theTwoTowers(),
+                theReturnOfTheKing());
+
         BorrowBook borrowBook = context
-                .withBooksBorrowed(
-                        lordOfTheRings(),
-                        harryPotter(),
-                        theTwoTowers(),
-                        theReturnOfTheKing())
                 .withBookToBorrow(theHobbit())
-                .buildBorrowBook();
+                .build();
 
         assertThatThrownBy(borrowBook::act)
                 .isInstanceOf(BorrowerHasAlreadyFourBooksBorrowedException.class)
                 .hasMessageContaining(theHobbit().id())
                 .hasMessageContaining(context.borrowerEmail());
+    }
+
+    private static Instant aDate() {
+        return Instant.parse("2025-04-14T10:00:00Z");
     }
 }

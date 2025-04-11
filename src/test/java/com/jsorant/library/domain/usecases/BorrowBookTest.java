@@ -1,5 +1,6 @@
 package com.jsorant.library.domain.usecases;
 
+import com.jsorant.UnitTest;
 import com.jsorant.library.domain.Book;
 import com.jsorant.library.domain.BookType;
 import com.jsorant.library.domain.Borrows;
@@ -9,6 +10,7 @@ import com.jsorant.library.domain.exceptions.BookNotOwnedByTheLibraryException;
 import com.jsorant.library.domain.exceptions.BorrowerHasAlreadyFourBooksBorrowedException;
 import com.jsorant.library.secondary.InMemoryBookRepository;
 import com.jsorant.library.secondary.InMemoryBorrowRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -22,6 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 // Borrower must not be already borrowing four books
 // DomainEvent must be returned
 
+@DisplayName("Borrow a book")
+@UnitTest
 public class BorrowBookTest {
 
     @Test
@@ -35,7 +39,7 @@ public class BorrowBookTest {
             Borrows bobBorrows = new Borrows("bob.doe@domain.fr").borrow("1234567890", Instant.parse("2025-04-13T10:00:00Z"));
             borrowsRepository.save(bobBorrows);
             new BorrowBook(bookRepository, borrowsRepository)
-                    .as("alice.doe@domain.fr")
+                    .by("alice.doe@domain.fr")
                     .bookId("1234567890")
                     .date(Instant.parse("2025-04-14T10:00:00Z"))
                     .act();
@@ -55,7 +59,7 @@ public class BorrowBookTest {
         bookRepository.save(new Book("1234567890", "The Hobbit", "JRR Tolkien", BookType.NOVEL));
         bookRepository.save(new Book("4083U14844", "Harry Potter and the Philosopher's Stone", "JK Rowling", BookType.NOVEL));
         BookBorrowed result = new BorrowBook(bookRepository, borrowsRepository)
-                .as("alice.doe@domain.fr")
+                .by("alice.doe@domain.fr")
                 .bookId("3214515512")
                 .date(Instant.parse("2025-04-14T10:00:00Z"))
                 .act();
@@ -69,7 +73,7 @@ public class BorrowBookTest {
 
         try {
             new BorrowBook(bookRepository, borrowsRepository)
-                    .as("alice.doe@domain.fr")
+                    .by("alice.doe@domain.fr")
                     .bookId("1234567891")
                     .date(Instant.parse("2025-04-14T10:00:00Z"))
                     .act();
@@ -101,7 +105,7 @@ public class BorrowBookTest {
 
         try {
             new BorrowBook(bookRepository, borrowsRepository)
-                    .as("alice.doe@domain.fr")
+                    .by("alice.doe@domain.fr")
                     .bookId("1234567890")
                     .date(Instant.parse("2025-04-14T10:00:00Z"))
                     .act();

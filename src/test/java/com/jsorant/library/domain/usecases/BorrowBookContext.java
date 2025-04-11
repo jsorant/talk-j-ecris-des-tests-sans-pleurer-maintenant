@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.util.List;
 
 import static com.jsorant.library.domain.BookFixture.*;
+import static com.jsorant.library.domain.UserFixture.bob;
 
 public class BorrowBookContext {
 
@@ -25,9 +26,8 @@ public class BorrowBookContext {
     );
 
     private Book bookToBorrow = theHobbit();
-    private final String borrowerEmail = "alice.doe@domain.fr";
-    private final String anotherBorrowerEmail = "bob.doe@domain.fr";
-    private final Instant borrowDate = Instant.parse("2025-04-14T10:00:00Z");
+    private String borrowerEmail = "alice.doe@domain.fr";
+    private Instant borrowDate = Instant.parse("2025-04-14T10:00:00Z");
 
     public BorrowBookContext() {
         populateLibraryWithSomeBooks();
@@ -37,45 +37,40 @@ public class BorrowBookContext {
         return borrowerEmail;
     }
 
-    public String anotherBorrowerEmail() {
-        return anotherBorrowerEmail;
+    public void withBookBorrowedByBob(Book book) {
+        new BorrowBook(books, borrows)
+                .by(bob())
+                .bookId(book.id())
+                .date(borrowDate)
+                .act();
     }
 
-    public Instant borrowDate() {
-        return borrowDate;
+    public void withBookNotOwnedByTheLibrary(Book book) {
+        books.remove(book);
+    }
+
+    public void withBooksBorrowed(Book... books) {
+        List.of(books).forEach(this::borrow);
     }
 
     public BorrowBookContext withBookToBorrow(Book book) {
         bookToBorrow = book;
-
         return this;
     }
 
-    public BorrowBookContext withBookBorrowedBySomeoneElse(Book book) {
-        new BorrowBook(books, borrows)
-                .as(anotherBorrowerEmail())
-                .bookId(book.id())
-                .date(borrowDate)
-                .act();
-
+    public BorrowBookContext by(String userEmail) {
+        borrowerEmail = userEmail;
         return this;
     }
 
-    public BorrowBookContext withBookNotOwnedByTheLibrary(Book book) {
-        books.remove(book);
-
+    public BorrowBookContext on(Instant date) {
+        borrowDate = date;
         return this;
     }
 
-    public BorrowBookContext withBooksBorrowed(Book... books) {
-        List.of(books).forEach(this::borrow);
-
-        return this;
-    }
-
-    public BorrowBook buildBorrowBook() {
+    public BorrowBook build() {
         return new BorrowBook(books, borrows)
-                .as(borrowerEmail)
+                .by(borrowerEmail)
                 .bookId(bookToBorrow.id())
                 .date(borrowDate);
     }
@@ -86,7 +81,7 @@ public class BorrowBookContext {
 
     private void borrow(Book book) {
         new BorrowBook(books, borrows)
-                .as(borrowerEmail)
+                .by(borrowerEmail)
                 .bookId(book.id())
                 .date(borrowDate)
                 .act();

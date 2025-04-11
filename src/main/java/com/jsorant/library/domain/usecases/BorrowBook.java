@@ -23,7 +23,7 @@ public class BorrowBook {
         this.borrows = borrows;
     }
 
-    public BorrowBook as(String borrowerEmail) {
+    public BorrowBook by(String borrowerEmail) {
         this.borrowerEmail = borrowerEmail;
         return this;
     }
