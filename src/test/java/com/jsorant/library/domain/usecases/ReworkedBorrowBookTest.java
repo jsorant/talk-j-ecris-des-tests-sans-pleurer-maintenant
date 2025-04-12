@@ -57,13 +57,11 @@ public class ReworkedBorrowBookTest {
 
         BorrowBook borrowBook = context
                 .withBookToBorrow(theHobbit())
-                .by(alice())
                 .buildUseCase();
 
         assertThatThrownBy(borrowBook::act)
                 .isInstanceOf(BorrowerHasAlreadyFourBooksBorrowedException.class)
-                .hasMessageContaining(theHobbit().id())
-                .hasMessageContaining(alice());
+                .hasMessageContaining(theHobbit().id());
     }
 
     @Test

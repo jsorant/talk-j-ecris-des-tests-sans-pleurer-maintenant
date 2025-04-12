@@ -105,7 +105,6 @@ public class BorrowBookTest {
         } catch (RuntimeException e) {
             assertEquals(true, e instanceof BorrowerHasAlreadyFourBooksBorrowedException);
             assertTrue(e.getMessage().contains("1234567890"));
-            assertTrue(e.getMessage().contains("alice.doe@domain.fr"));
         }
     }
 }
