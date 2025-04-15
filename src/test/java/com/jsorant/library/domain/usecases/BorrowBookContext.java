@@ -25,10 +25,6 @@ public class BorrowBookContext {
         populateLibraryWithSomeBooks();
     }
 
-    public String borrowerEmail() {
-        return borrowerEmail;
-    }
-
     public void withBookBorrowedByBob(Book book) {
         new BorrowBook(books, borrows)
                 .by(bob())
